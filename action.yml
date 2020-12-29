@@ -24,17 +24,34 @@ runs:
     - id: whereis-xmlformat-output
       shell: bash
       run: |
+        echo "::group::Installing packages..."
         sudo apt-get install wget xmlformat-ruby
+        echo "::endgroup::"
         echo "::set-output name=xmlformat::$(whereis xmformat)"
+
+    - id: get-xmlfiles-in-commit
+      shell: bash
+      run: |
+        echo "::group::All files in commit..."
+        /usr/bin/git diff-tree --no-commit-id --name-only -r -m --diff-filter=ACMR "${{ github.sha }}"
+        echo "::endgroup::"
 
     - id: reformat
       shell: bash
       run: |
         CONFIG="${{ inputs.config }}"
-        ./xml-format-action.sh -v ${CONFIG:+--config-file $CONFIG} \
-          --excludes ${{ inputs.exclude-files }} \
-          --extensions "${{ inputs.extensions }}" \
-          ${{ github.sha }}
+        EXCLUDES="${{ inputs.exclude-files }}"
+        echo "::group::Reformatting parameters..."
+        echo "excludes=${{ inputs.exclude-files }}"
+        echo "extensions=${{ inputs.extensions }}"
+        echo "commit=${{ github.sha }}"
+        echo "::endgroup::"
+        ${{ github.action_path }}xml-format-action.sh -v ${CONFIG:+--config-file "$CONFIG"} \
+          ${EXCLUDES:+--excludes="$EXCLUDES"} \
+          --extensions="${{ inputs.extensions }}" \
+          "${{ github.sha }}"
+        
+        echo "::set-output name=returncode::$?"
 
 branding:
     icon: "git-merge"

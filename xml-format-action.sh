@@ -91,9 +91,11 @@ function getgitfilelist {
 
 ## Parsing command line arguments:
 export POSIXLY_CORRECT=1
-ARGS=$(getopt -o "hve:c:x:" -l "help,verbose,excludes:,config-file:,extensions" -n "$ME" -- "$@")
+ARGS=$(getopt -o "hve:c:x:" -l "help,verbose,excludes:,config-file:,extensions:" -n "$ME" -- "$@")
 eval set -- "$ARGS"
 unset POSIXLY_CORRECT
+
+echo "::warning::Command line: $*"
 
 while true; do
     case "$1" in
@@ -109,12 +111,18 @@ while true; do
         ;;
 
     -e|--excludes)
-       EXCLUDES+=($2)
+       # Prevent from adding empty strings
+       if [ ! -z "$2" ]; then
+          EXCLUDES+=($2)
+       fi
        shift 2
        ;;
 
     -x|--extensions)
-       EXTENSIONS+=($2)
+       # Prevent from adding empty strings
+       if [ ! -z "$2" ]; then
+          EXTENSIONS+=($2)
+       fi
        shift 2
        ;;
 
@@ -130,7 +138,9 @@ while true; do
           # commited.
           #
           BASE="/tmp/${CONFIG##*/}"
+          echo "::group::Download config file..."
           [ -e "$BASE" ] || wget -O "$BASE" --tries=2 --timeout=2 --retry-connrefused=on $CONFIG
+          echo -e "::endgroup::"
           # Use the downloaded file path:
           CONFIG="${BASE}"
        elif [ ! -e "$CONFIG" ]; then
@@ -147,6 +157,7 @@ while true; do
 
     *)
       echo "::error::Internal error!"
+      echo "::error::Used $*"
       exit 255
       ;;
     esac

@@ -29,16 +29,12 @@ jobs:
           echo -e "workspace  : ${{ github.workspace }}"
 
       - name: Format XML
-        
         uses: ./
-        with:
-          include-files: tests/xml/*.xml
 
       - name: Format DocBook XML
         # if: startsWith(github.ref, 'refs/heads/')
         uses: ./
         with:
-          include-files: tests/docbook/*.xml
           exclude-files: tests/docbook/schemas.xml
           config: https://github.com/openSUSE/daps/raw/main/etc/docbook-xmlformat.conf
 
