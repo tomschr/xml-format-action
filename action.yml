@@ -11,11 +11,11 @@ inputs:
     description: "Exclude XML files from reformatting"
     required: false
     default: ""
-  
-  include-files:
-    description: "Include XML files for reformatting"
+
+  extensions:
+    description: "Define file extensions for XML files (without dots or globs)"
     required: false
-    default: "*.xml xml/*.xml"
+    default: "xml"
 
 runs:
   using: "composite"
@@ -24,17 +24,34 @@ runs:
     - id: whereis-xmlformat-output
       shell: bash
       run: |
-        sudo apt-get install wget xmlformat-ruby
+        echo "::group::Installing packages..."
+        sudo apt-get install git wget xmlformat-ruby
+        echo "::endgroup::"
         echo "::set-output name=xmlformat::$(whereis xmformat)"
+
+    - id: get-xmlfiles-in-commit
+      shell: bash
+      run: |
+        echo "::group::All files in commit..."
+        /usr/bin/git diff-tree --no-commit-id --name-only -r -m --diff-filter=ACMR "${{ github.sha }}"
+        echo "::endgroup::"
 
     - id: reformat
       shell: bash
       run: |
         CONFIG="${{ inputs.config }}"
-        ./xml-format-action.sh -v ${CONFIG:+--config-file $CONFIG} \
-          -e ${{ inputs.exclude-files }} \
-          ${{ inputs.include-files }}
+        EXCLUDES="${{ inputs.exclude-files }}"
+        echo "::group::Reformatting parameters..."
+        echo "excludes=${{ inputs.exclude-files }}"
+        echo "extensions=${{ inputs.extensions }}"
+        echo "commit=${{ github.sha }}"
+        echo "::endgroup::"
+        ${{ github.action_path }}xml-format-action.sh -v ${CONFIG:+--config-file "$CONFIG"} \
+          ${EXCLUDES:+--excludes="$EXCLUDES"} \
+          --extensions="${{ inputs.extensions }}" \
+          "${{ github.sha }}"
         
+        echo "::set-output name=returncode::$?"
 
 branding:
     icon: "git-merge"

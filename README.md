@@ -8,14 +8,14 @@ GitHub Action to formats XML files with the `xmlformat` tool.
 This GitHub Action takes care of:
 
 * Installs the `xmlformat-ruby` package.
-* Formats your XML files.
-* Optionally lets you set a configuration file.
+* Investigates what files are integrated in the commit.
+* Optionally lets you set a configuration file. If it's a remote address,
+  it will download the config file automatically.
 * Optionally, define a list of excluding files.
+* Optionally, lets you define a list of allowed file extensions.
 
-The GitHub Action **does not**:
-
-* Commits the changed XML files automatically
-* Pushes the commit automatically
+The GitHub Action **does not** commits and pushes the changed XML
+files automatically.
 
 
 ## Use case: Reformatting XML files
@@ -84,7 +84,7 @@ For example:
 ```
 
 In this case, the remote config file is downloaded and saved
-in the `/tmp` directory.
+outside the checked out repository (in the `/tmp` directory).
 
 
 ## Use case: Excluding XML files from reformatting
@@ -140,7 +140,7 @@ jobs:
       - name: Format XML
         uses: tomschr/xml-format-action@v1
         with:
-           include-files: "folder1/*.xml folder2/*.xml"
+           extensions: "mml"
 ```
 
 
@@ -148,7 +148,7 @@ jobs:
 
 * `config`: Defines the config file for `xmlformat`.
 
-* `include-files`: Includes XML files from reformatting.
+* `extensions`: Define file extensions for XML files (without dots or globs).
 
 * `exclude-files`: Excludes XML files from reformatting.
 
