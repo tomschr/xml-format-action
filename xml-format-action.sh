@@ -38,7 +38,7 @@ Usage: $ME [OPTIONS] [XMLFILES]
 Options:
   -h, --help         Output this help text
   -e, --exclude      Exclude these files
-  -c FILE, --config FILE
+  -c FILE, --config-file FILE
                      Pass configuration file for xmlformat.
                      If the strings starts with 'http' or 'https',
                      the config file is downloaded
@@ -76,7 +76,7 @@ while true; do
        shift 2
        ;;
 
-    -c|--config)
+    -c|--config-file)
        CONFIG="$2"
        # 
        if [ -z "$CONFIG" ]; then
@@ -129,4 +129,4 @@ if [ $VERBOSITY -gt 0 ]; then
   echo -e "\n::endgroup::"
 fi
 
-xmlformat ${CONFIG:+--config-file $CONFIG} --backup .bak "${XMLFILES[@]}"
+xmlformat ${CONFIG:+--config-file $CONFIG} --backup .bak --in-place "${XMLFILES[@]}"
