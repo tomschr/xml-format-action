@@ -1,0 +1,39 @@
+name: 'XML reformat'
+description: 'Reformat XML files'
+
+inputs:
+  config:   # id of input
+    description: "The config file for xmlformat"
+    required: false
+    default: ""
+
+  exclude:
+    description: "Exclude XML files from reformatting"
+    required: false
+    default: ""
+  
+  include:
+    description: "Include XML files for reformatting"
+    required: false
+    default: "*.xml xml/*.xml"
+
+runs:
+  using: "composite"
+  steps:
+
+    - id: whereis-xmlformat-output
+      shell: bash
+      run: |
+        sudo apt-get install xmlformat-ruby
+        echo "::set-output name=xmlformat::$(whereis xmformat)"
+
+    - id: reformat
+      shell: bash
+      run: |
+        XMLCONFIG=${XMLCONFIG:-}
+        xmlformat --in-place ${{ inputs.include }}
+        
+
+branding:
+    icon: "git-merge"
+    color: "green"
