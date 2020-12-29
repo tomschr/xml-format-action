@@ -15,6 +15,8 @@ ME="${0##*/}"
 VERSION="0.1.0"
 AUTHOR="Tom Schraitle"
 
+VERBOSITY=0
+
 # All excluded files:
 EXCLUDES=()
 
@@ -121,5 +123,10 @@ for i in "${ALLXMLFILES[@]}"; do
     [[ -n $skip ]] || XMLFILES+=("$i")
 done
 
-declare -p ALLXMLFILES EXCLUDES XMLFILES
-echo xmlformat ${CONFIG:+--config-file $CONFIG} --in-place "${XMLFILES[@]}"
+if [ $VERBOSITY -gt 0 ]; then
+  echo "::group::XML variables"
+  declare -p ALLXMLFILES EXCLUDES XMLFILES
+  echo -e "\n::endgroup::"
+fi
+
+xmlformat ${CONFIG:+--config-file $CONFIG} --backup .bak "${XMLFILES[@]}"
