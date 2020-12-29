@@ -31,8 +31,9 @@ runs:
       shell: bash
       run: |
         CONFIG="${{ inputs.config }}"
-        # xmlformat --in-place ${{ inputs.include }}
-        ./xml-format-action.sh ${CONFIG:+--config-file $CONFIG} ${{ inputs.include-files }}
+        ./xml-format-action.sh -v ${CONFIG:+--config-file $CONFIG} \
+          -e ${{ inputs.exclude-files }} \
+          ${{ inputs.include-files }}
         
 
 branding:
