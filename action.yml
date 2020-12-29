@@ -3,12 +3,12 @@ description: 'Reformat XML files'
 
 inputs:
   config:
-    description: "The config file for xmlformat"
+    description: "The config file to use for xmlformat"
     required: false
     default: ""
 
   exclude-files:
-    description: "Exclude XML files from reformatting"
+    description: "Exclude files from reformatting"
     required: false
     default: ""
 
@@ -17,23 +17,32 @@ inputs:
     required: false
     default: "xml"
 
+  commit:
+    description: "Should the formatted files committed? Use true, yes, or 1."
+    required: false
+    default: true
+
+  commit-message:
+    description: "Use this commit message for the reformatting step"
+    required: false
+    default: "[xml-format-action] Auto reformatting XML Files"
+
+outputs:
+  xmlfound:
+    description: "Does the commit contains some XML files?"
+    value: ${{ steps.reformat.outputs.xmlfound }}
+
 runs:
   using: "composite"
   steps:
 
-    - id: whereis-xmlformat-output
+    - id: install-packages
+      name: Installing packages
       shell: bash
       run: |
-        echo "::group::Installing packages..."
-        sudo apt-get install git wget xmlformat-ruby
-        echo "::endgroup::"
-        echo "::set-output name=xmlformat::$(whereis xmformat)"
-
-    - id: get-xmlfiles-in-commit
-      shell: bash
-      run: |
-        echo "::group::All files in commit..."
-        /usr/bin/git diff-tree --no-commit-id --name-only -r -m --diff-filter=ACMR "${{ github.sha }}"
+        PACKAGES="xmlformat-ruby"
+        echo "::group::Installing package(s) $PACKAGES..."
+        sudo apt-get install $PACKAGES
         echo "::endgroup::"
 
     - id: reformat
@@ -41,17 +50,15 @@ runs:
       run: |
         CONFIG="${{ inputs.config }}"
         EXCLUDES="${{ inputs.exclude-files }}"
-        echo "::group::Reformatting parameters..."
-        echo "excludes=${{ inputs.exclude-files }}"
-        echo "extensions=${{ inputs.extensions }}"
-        echo "commit=${{ github.sha }}"
-        echo "::endgroup::"
+        MESSAGE="${{ inputs.commit-message }}"
+
         ${{ github.action_path }}xml-format-action.sh -v ${CONFIG:+--config-file "$CONFIG"} \
           ${EXCLUDES:+--excludes="$EXCLUDES"} \
           --extensions="${{ inputs.extensions }}" \
+          --need-commit  ${{ inputs.commit }} \
+          ${MESSAGE:+--message="$MESSAGE"} \
           "${{ github.sha }}"
-        
-        echo "::set-output name=returncode::$?"
+
 
 branding:
     icon: "git-merge"
