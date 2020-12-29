@@ -24,7 +24,7 @@ runs:
     - id: whereis-xmlformat-output
       shell: bash
       run: |
-        sudo apt-get install xmlformat-ruby
+        sudo apt-get install wget xmlformat-ruby
         echo "::set-output name=xmlformat::$(whereis xmformat)"
 
     - id: reformat
