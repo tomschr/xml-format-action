@@ -1,10 +1,14 @@
 <?xml version="1.0"?>
 <article>
-    <title>Book Title
+ <title>Book Title
 </title>
-
-  <section><title>A</title><para/></section>
-
-  <section><title>B</title><para/></section
+ <section>
+  <title>A</title>
+  <para/>
+ </section>
+ <section>
+  <title>B</title>
+  <para/>
+ </section
   >
 </article>
