@@ -65,5 +65,6 @@ jobs:
         run: |
             # Remove any refs/*/ parts:
             BRANCH="${GITHUB_REF#refs/heads/}"
-            BRANCH="${BRANCH#refs/tags/}"
+            # BRANCH="${BRANCH#refs/tags/}"
             URL="https://${{github.actor}}:${{secrets.SOURCE_PUSH_TOKEN}}@github.com/${{github.repository}}.git"
+            git push "$URL" "$BRANCH"
