@@ -7,9 +7,10 @@ GitHub Action to formats XML files with the `xmlformat` tool.
 
 This GitHub Action takes care of:
 
-* Installs the `xmlformat` tool.
+* Installs the `xmlformat-ruby` package.
 * Formats your XML files.
-* If given, add or remove XML files from the list.
+* Optionally lets you set a configuration file.
+* Optionally, define a list of excluding files.
 
 The GitHub Action **does not**:
 
@@ -20,8 +21,8 @@ The GitHub Action **does not**:
 ## Use case: Reformatting XML files
 
 This use case is only activated, when some XML files inside
-the `xml/` paths are changed. This can be done with the
-`on.push.paths` keys:
+the `xml/` and the root paths have been changed.
+This can be done with the `on.push.paths` keys:
 
 
 ```yaml
@@ -31,6 +32,7 @@ on:
     paths:
       # Add more paths to this list:
       - "xml/*.xml"
+      - "*.xml"
 
 jobs:
   reformat-xml:
@@ -41,12 +43,13 @@ jobs:
 
       - name: Format XML
         uses: tomschr/xml-format-action@v1
-        with:
-           include-files: xml/*.xml
 ```
 
 ## Use case: Using a configuration file
 
+In some cases, the default formatting is not what you want.
+In this case, you can provide a configuration file. Use
+the key `config`:
 
 ```yaml
 # Add .github/workflows/reformat-xml-with-config.yml
@@ -67,9 +70,65 @@ jobs:
       - name: Format XML
         uses: tomschr/xml-format-action@v1
         with:
-           include-files: xml/*.xml
            config: doc/docbook-xmlformat.conf
 ```
+
+## Use case: Excluding XML files from reformatting
+
+Sometimes you have configuration files which happen to end
+with the same file extension (Emacs has `schemas.xml`). If
+you want to exclude such files from reformatting, use the
+key `exclude-files`:
+
+```yaml
+# Add .github/workflows/reformat-exclude-files.yml
+
+on:
+  push:
+    paths:
+      # Add more paths to this list:
+      - "xml/*.xml"
+
+jobs:
+  reformat-xml:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Format XML
+        uses: tomschr/xml-format-action@v1
+        with:
+           exclude-files: xml/schemas.xml
+```
+
+## Use case: Including XML files from different paths
+
+In some cases you have your XML files in different directories.
+Use the `include-files` key to add them:
+
+```yaml
+# Add .github/workflows/reformat-xml-two-paths.yml
+
+on:
+  push:
+    paths:
+      # Add more paths to this list:
+      - "xml/*.xml"
+
+jobs:
+  reformat-xml:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Format XML
+        uses: tomschr/xml-format-action@v1
+        with:
+           include-files: "folder1/*.xml folder2/*.xml"
+```
+
 
 ## Inputs
 
