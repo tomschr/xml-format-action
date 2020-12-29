@@ -12,6 +12,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: List action metadata
+        run: |
+          echo -e "action     : ${{ github.action }}"
+          echo -e "actor      : ${{ github.actor }}"
+          echo -e "event_name : ${{ github.event_name }}"
+          echo -e "job        : ${{ github.job }}"
+          echo -e "ref        : ${{ github.ref }}"
+          echo -e" repository : ${{ github.repository }}"
+          echo -e "run_id     : ${{ github.run_id }}"
+          echo -e "sha        : ${{ github.sha }}"
+          echo -e "workflow   : ${{ github.workflow }}"
+          echo -e "workspace  : ${{ github.workspace }}"
+
       - name: Format XML
         uses: ./
         with:
