@@ -5,13 +5,11 @@ on:
       - 'tests/xml/*.xml'
       - 'tests/docbook/*.xml'
 
-    # Sequence of patterns matched against refs/tags
-    tags-ignore:
-      # ignore all tags
-      - *
 
 jobs:
   reformat-xml:
+    # Use only branches, but skip tags
+    if: startsWith(github.ref, 'refs/heads/')
     runs-on: ubuntu-latest
 
     steps:
@@ -31,11 +29,13 @@ jobs:
           echo -e "workspace  : ${{ github.workspace }}"
 
       - name: Format XML
+        
         uses: ./
         with:
           include-files: tests/xml/*.xml
 
       - name: Format DocBook XML
+        # if: startsWith(github.ref, 'refs/heads/')
         uses: ./
         with:
           include-files: tests/docbook/*.xml
@@ -50,9 +50,20 @@ jobs:
       - name: Commit
         run: |
           git commit --all -m"[Auto] Reformat XML Files" || true
+      
+      - name: Checks if we have a tag
+        id: isreftag
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+              echo "::set-output name=istag::true"
+          else
+              echo "::set-output name=istag::false"
+          fi
 
       - name: Push
+        # if: ${{ steps.isreftag.outputs.istag }} == 'false'
         run: |
-            BRANCH="HEAD:${GITHUB_REF#refs/heads/}"
+            # Remove any refs/*/ parts:
+            BRANCH="${GITHUB_REF#refs/heads/}"
+            BRANCH="${BRANCH#refs/tags/}"
             URL="https://${{github.actor}}:${{secrets.SOURCE_PUSH_TOKEN}}@github.com/${{github.repository}}.git"
-            git push "$URL" "$BRANCH"

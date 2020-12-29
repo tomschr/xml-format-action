@@ -34,7 +34,6 @@ runs:
         ./xml-format-action.sh -v ${CONFIG:+--config-file $CONFIG} \
           -e ${{ inputs.exclude-files }} \
           ${{ inputs.include-files }}
-        
 
 branding:
     icon: "git-merge"
