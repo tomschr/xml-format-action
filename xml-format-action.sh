@@ -1,5 +1,9 @@
 #!/bin/bash
 #
+# Purpose:
+#  Provide command line arguments to:
+#  - download config file if it's a http/https address
+#  - deals with include and exclude files
 #
 # Author: Tom Schraitle
 # Date: December 2020
@@ -33,9 +37,9 @@ Options:
   -h, --help         Output this help text
   -e, --exclude      Exclude these files
   -c FILE, --config FILE
-                     Pass configuration file. If the strings
-                     starts with 'http' or 'https', the config file
-                     is downloaded
+                     Pass configuration file for xmlformat.
+                     If the strings starts with 'http' or 'https',
+                     the config file is downloaded
 
 Arguments:
   XMLFILES           The XML files to format
