@@ -25,7 +25,7 @@ runs:
       shell: bash
       run: |
         echo "::group::Installing packages..."
-        sudo apt-get install wget xmlformat-ruby
+        sudo apt-get install git wget xmlformat-ruby
         echo "::endgroup::"
         echo "::set-output name=xmlformat::$(whereis xmformat)"
 
