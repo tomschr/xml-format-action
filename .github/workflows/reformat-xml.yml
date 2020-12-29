@@ -5,6 +5,11 @@ on:
       - 'tests/xml/*.xml'
       - 'tests/docbook/*.xml'
 
+    # Sequence of patterns matched against refs/tags
+    tags-ignore:
+      # ignore all tags
+      - *
+
 jobs:
   reformat-xml:
     runs-on: ubuntu-latest
