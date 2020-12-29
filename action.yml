@@ -11,11 +11,11 @@ inputs:
     description: "Exclude XML files from reformatting"
     required: false
     default: ""
-  
-  include-files:
-    description: "Include XML files for reformatting"
+
+  extensions:
+    description: "Define file extensions for XML files (without dots or globs)"
     required: false
-    default: "*.xml xml/*.xml"
+    default: "xml"
 
 runs:
   using: "composite"
@@ -32,8 +32,9 @@ runs:
       run: |
         CONFIG="${{ inputs.config }}"
         ./xml-format-action.sh -v ${CONFIG:+--config-file $CONFIG} \
-          -e ${{ inputs.exclude-files }} \
-          ${{ inputs.include-files }}
+          --excludes ${{ inputs.exclude-files }} \
+          --extensions "${{ inputs.extensions }}" \
+          ${{ github.sha }}
 
 branding:
     icon: "git-merge"
