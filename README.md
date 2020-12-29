@@ -73,6 +73,20 @@ jobs:
            config: doc/docbook-xmlformat.conf
 ```
 
+It's also possible to use a URL for the config file.
+For example:
+
+```yaml
+- name: Format XML from remote URL
+    uses: tomschr/xml-format-action@v1
+    with:
+        config: https://github.com/openSUSE/daps/raw/main/etc/docbook-xmlformat.conf
+```
+
+In this case, the remote config file is downloaded and saved
+in the `/tmp` directory.
+
+
 ## Use case: Excluding XML files from reformatting
 
 Sometimes you have configuration files which happen to end
