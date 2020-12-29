@@ -2,17 +2,17 @@ name: 'XML reformat'
 description: 'Reformat XML files'
 
 inputs:
-  config:   # id of input
+  config:
     description: "The config file for xmlformat"
     required: false
     default: ""
 
-  exclude:
+  exclude-files:
     description: "Exclude XML files from reformatting"
     required: false
     default: ""
   
-  include:
+  include-files:
     description: "Include XML files for reformatting"
     required: false
     default: "*.xml xml/*.xml"
@@ -30,8 +30,9 @@ runs:
     - id: reformat
       shell: bash
       run: |
-        XMLCONFIG=${XMLCONFIG:-}
-        xmlformat --in-place ${{ inputs.include }}
+        CONFIG="${{ inputs.config }}"
+        # xmlformat --in-place ${{ inputs.include }}
+        ./xml-format-action.sh ${CONFIG:+--config-file $CONFIG} ${{ inputs.include-files }}
         
 
 branding:

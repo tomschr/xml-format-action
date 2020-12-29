@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'tests/xml/*.xml'
+      - 'tests/docbook/*.xml'
 
 jobs:
   reformat-xml:
@@ -14,18 +15,25 @@ jobs:
       - name: Format XML
         uses: ./
         with:
-          include: tests/xml/*.xml
+          include-files: tests/xml/*.xml
+
+      - name: Format DocBook XML
+        uses: ./
+        with:
+          include-files: tests/docbook/*.xml
+          config: https://github.com/openSUSE/daps/raw/main/etc/docbook-xmlformat.conf
 
       - name: Configure Git
         run: |
-          git config --local user.email "${{github.actor}}@users.noreply.github.com"
+          git config --local user.email "${{ github.actor }}@users.noreply.github.com"
           git config --local user.name "XML Reformat Bot"
 
       - name: Commit
         run: |
-          git commit --all -m"Reformat XML Files to common format." || true
+          git commit --all -m"[Auto] Reformat XML Files" || true
 
       - name: Push
         run: |
             BRANCH="HEAD:${GITHUB_REF#refs/heads/}"
-            git push "https://${{github.actor}}:${{secrets.SOURCE_PUSH_TOKEN}}@github.com/${{github.repository}}.git" "$BRANCH"
+            URL="https://${{github.actor}}:${{secrets.SOURCE_PUSH_TOKEN}}@github.com/${{github.repository}}.git"
+            git push "$URL" "$BRANCH"
