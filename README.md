@@ -41,6 +41,8 @@ jobs:
 
       - name: Format XML
         uses: tomschr/xml-format-action@v1
+        with:
+           include-files: xml/*.xml
 ```
 
 ## Use case: Using a configuration file
@@ -66,4 +68,5 @@ jobs:
         uses: tomschr/xml-format-action@v1
         with:
            config: doc/docbook-xmlformat.conf
+           include-files: xml/*.xml
 ```

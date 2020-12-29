@@ -84,9 +84,12 @@ while true; do
         exit 10
        fi
        if [[ $CONFIG == http* ]]; then
-          BASE=${CONFIG##*/}
-          [ -e "$BASE" ] || wget --tries=2 --timeout=2 --retry-connrefused=on $CONFIG
-          # Remove all paths of the URL and store the basename:
+          # We need to save the config outside the repo so it's not accidently
+          # commited.
+          #
+          BASE="/tmp/${CONFIG##*/}"
+          [ -e "$BASE" ] || wget -O "$BASE" --tries=2 --timeout=2 --retry-connrefused=on $CONFIG
+          # Use the downloaded file path:
           CONFIG="${BASE}"
        elif [ ! -e "$CONFIG" ]; then
          echo "::error file=$CONFIG::File not found"
