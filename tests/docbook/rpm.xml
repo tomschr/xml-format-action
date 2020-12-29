@@ -4,8 +4,8 @@
   <!ENTITY % entities SYSTEM "entity-decl.ent">
     %entities;
 ]>
-
-<sect1 xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0" xml:id="sec-rpm"> <title>RPM&mdash;the Package Manager</title>
+<sect1 xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0" xml:id="sec-rpm">
+ <title>RPM&mdash;the Package Manager</title>
 
  <info>
   <dm:docmanager xmlns:dm="urn:x-suse:ns:docmanager">
@@ -22,11 +22,11 @@
  </para>
 
  <para>
-  <command>rpm</command> has five modes: installing, uninstalling
-  (or updating) software packages, rebuilding the RPM database, querying RPM
-  bases or individual RPM archives, integrity checking of packages and signing
-  packages. <command>rpmbuild</command> can be used to build installable
-  packages from pristine sources.
+  <command>rpm</command> has five modes: installing, uninstalling (or updating)
+  software packages, rebuilding the RPM database, querying RPM bases or
+  individual RPM archives, integrity checking of packages and signing packages.
+  <command>rpmbuild</command> can be used to build installable packages from
+  pristine sources.
  </para>
 
  <para>
@@ -67,7 +67,7 @@
    &sle; 11, this key is not imported by default on &sle; 12 systems. To
    manually import the key, use the following command:
   </para>
-  <screen os="sles;sled">&prompt.sudo;rpm --import \
+<screen os="sles;sled">&prompt.sudo;rpm --import \
 /usr/share/doc/packages/suse-build-key/suse_ptf_key.asc</screen>
   <para os="sles;sled">
    After importing the key, you can install PTF packages on your system.
@@ -114,8 +114,8 @@
      update, <command>rpm</command> saves the changed file with the extension
      <filename>.rpmorig</filename> or <filename>.rpmsave</filename> (backup
      file) and installs the version from the new package. This is done only if
-     the originally installed file and the newer version are different. If this is
-     the case, compare the backup file (<filename>.rpmorig</filename> or
+     the originally installed file and the newer version are different. If this
+     is the case, compare the backup file (<filename>.rpmorig</filename> or
      <filename>.rpmsave</filename>) with the newly installed file and make your
      changes again in the new file. Afterward, delete all
      <filename>.rpmorig</filename> and <filename>.rpmsave</filename> files to
@@ -583,8 +583,7 @@ S.5....T c /etc/wgetrc</screen>
   </para>
   <variablelist>
    <varlistentry>
-    <term><filename>SOURCES</filename>
-    </term>
+    <term><filename>SOURCES</filename></term>
     <listitem>
      <para>
       for the original sources (<filename>.tar.bz2</filename> or
@@ -595,8 +594,7 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><filename>SPECS</filename>
-    </term>
+    <term><filename>SPECS</filename></term>
     <listitem>
      <para>
       for the <filename>.spec</filename> files, similar to a meta Makefile,
@@ -605,8 +603,7 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><filename>BUILD</filename>
-    </term>
+    <term><filename>BUILD</filename></term>
     <listitem>
      <para>
       all the sources are unpacked, patched and compiled in this directory
@@ -614,8 +611,7 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><filename>RPMS</filename>
-    </term>
+    <term><filename>RPMS</filename></term>
     <listitem>
      <para>
       where the completed binary packages are stored
@@ -623,8 +619,7 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><filename>SRPMS</filename>
-    </term>
+    <term><filename>SRPMS</filename></term>
     <listitem>
      <para>
       here are the source RPMs
@@ -664,8 +659,7 @@ S.5....T c /etc/wgetrc</screen>
   </para>
   <variablelist>
    <varlistentry>
-    <term><option>-bp</option>
-    </term>
+    <term><option>-bp</option></term>
     <listitem>
      <para>
       Prepare sources in <filename>/usr/src/packages/BUILD</filename>: unpack
@@ -674,8 +668,7 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><option>-bc</option>
-    </term>
+    <term><option>-bc</option></term>
     <listitem>
      <para>
       Do the same as <option>-bp</option>, but with additional compilation.
@@ -683,8 +676,7 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><option>-bi</option>
-    </term>
+    <term><option>-bi</option></term>
     <listitem>
      <para>
       Do the same as <option>-bp</option>, but with additional installation of
@@ -694,8 +686,7 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><option>-bb</option>
-    </term>
+    <term><option>-bb</option></term>
     <listitem>
      <para>
       Do the same as <option>-bi</option>, but with the additional creation of
@@ -705,8 +696,7 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><option>-ba</option>
-    </term>
+    <term><option>-ba</option></term>
     <listitem>
      <para>
       Do the same as <option>-bb</option>, but with the additional creation of
@@ -716,8 +706,7 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><option>--short-circuit</option>
-    </term>
+    <term><option>--short-circuit</option></term>
     <listitem>
      <para>
       Skip some steps.
@@ -733,11 +722,14 @@ S.5....T c /etc/wgetrc</screen>
   </para>
   <para>
    Keep in mind, the <literal>BuildRoot</literal> directive in the spec file is
-   deprecated since &productname; <phrase os="sles;sled">12</phrase><phrase
-   os="osuse">42.1</phrase>. If you still need this feature, use the
-   <option>--buildroot</option> option as a workaround. <phrase
-   os="sles;sled">For more detailed background information, see the support
-    database at <link
+   deprecated since &productname;
+   <phrase os="sles;sled">12</phrase><phrase
+   os="osuse">42.1</phrase>. If
+   you still need this feature, use the <option>--buildroot</option> option as
+   a workaround. <phrase
+   os="sles;sled">For more detailed background
+   information, see the support database at
+   <link
    xlink:href="https://www.suse.com/support/kb/doc?id=7017104"/>.</phrase>
   </para>
  </sect2>
@@ -756,8 +748,7 @@ S.5....T c /etc/wgetrc</screen>
    <command>build</command> command looks for the <filename>.spec</filename>
    file in the source directory. To build <filename>wget</filename> (like in
    the above example) with the DVD mounted in the system under
-   <filename>/media/dvd</filename>, use the following commands as
-   &rootuser;:
+   <filename>/media/dvd</filename>, use the following commands as &rootuser;:
   </para>
 <screen>&prompt.root;cd /usr/src/packages/SOURCES/
 &prompt.root;mv ../SPECS/wget.spec .
