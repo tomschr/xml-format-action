@@ -67,6 +67,34 @@ jobs:
       - name: Format XML
         uses: tomschr/xml-format-action@v1
         with:
-           config: doc/docbook-xmlformat.conf
            include-files: xml/*.xml
+           config: doc/docbook-xmlformat.conf
 ```
+
+## Inputs
+
+* `config`: Defines the config file for `xmlformat`.
+
+* `include-files`: Includes XML files from reformatting.
+
+* `exclude-files`: Excludes XML files from reformatting.
+
+
+## Outputs
+
+Currently, this GitHub Action does not define any outputs.
+
+
+## Committing reformatted files
+
+The GitHub Action just reformats the XML files (excluding
+the exclusion list); it does not commit nor push any files.
+
+If you want to commit and push reformatted XML files, you
+have the following options:
+
+* [actions-go/push](https://github.com/actions-go/push)
+* [reformat-xml.yml](https://github.com/tomschr/xml-format-action/blob/main/.github/workflows/reformat-xml.yml)
+
+The `reformat-xml.yml` gives an overview if you can do it
+with normal git commands.
