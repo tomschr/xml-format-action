@@ -17,6 +17,9 @@ AUTHOR="Tom Schraitle"
 
 VERBOSITY=0
 
+# All file extensions (usually "xml"):
+EXTENSIONS=()
+
 # All excluded files:
 EXCLUDES=()
 
@@ -25,7 +28,9 @@ ALLXMLFILES=()
 
 # The XML files to investigate (ALLXMLFILES - EXCLUDE):
 XMLFILES=()
-declare -a EXCLUDES ALLXMLFILES XMLFILES
+
+# We declare them as array:
+declare -a ALLXMLFILES EXCLUDES EXTENSIONS XMLFILES
 
 # Use branch
 BRANCH=${GITHUB_REF#*refs/heads/}
@@ -38,10 +43,14 @@ Usage: $ME [OPTIONS] [XMLFILES]
 Options:
   -h, --help         Output this help text
   -e, --exclude      Exclude these files
-  -c FILE, --config-file FILE
+  -c FILE, --config-file=FILE
                      Pass configuration file for xmlformat.
                      If the strings starts with 'http' or 'https',
                      the config file is downloaded
+  -x EXT, --extensions=EXT
+                     Check for extensions in file. Add it as a string,
+                     each extension without dots and separated by a space
+                     (default: "$EXTENSIONS")
 
 Arguments:
   XMLFILES           The XML files to format
@@ -54,7 +63,7 @@ EOF_helptext
 
 ## Parsing command line arguments:
 export POSIXLY_CORRECT=1
-ARGS=$(getopt -o "hve:c:" -l "help,verbose,exclude:,config-file:" -n "$ME" -- "$@")
+ARGS=$(getopt -o "hve:c:x:" -l "help,verbose,excludes:,config-file:,extensions" -n "$ME" -- "$@")
 eval set -- "$ARGS"
 unset POSIXLY_CORRECT
 
@@ -71,8 +80,13 @@ while true; do
         shift
         ;;
 
-    -e|--exclude)
-       EXCLUDES=( $2 )
+    -e|--excludes)
+       EXCLUDES=($2)
+       shift 2
+       ;;
+
+    -x|--extensions)
+       EXTENSIONS+=($2)
        shift 2
        ;;
 
@@ -127,10 +141,11 @@ for i in "${ALLXMLFILES[@]}"; do
     [[ -n $skip ]] || XMLFILES+=("$i")
 done
 
+
 if [ $VERBOSITY -gt 0 ]; then
-  echo "::group::XML variables"
-  declare -p ALLXMLFILES EXCLUDES XMLFILES
-  echo -e "\n::endgroup::"
+  echo "::group::Show shell arrays"
+  declare -p ALLXMLFILES EXCLUDES EXTENSIONS XMLFILES
+  echo -e "::endgroup::"
 fi
 
 xmlformat ${CONFIG:+--config-file $CONFIG} --backup .bak --in-place "${XMLFILES[@]}"
