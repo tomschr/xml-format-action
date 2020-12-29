@@ -54,7 +54,7 @@ EOF_helptext
 
 ## Parsing command line arguments:
 export POSIXLY_CORRECT=1
-ARGS=$(getopt -o "hve:c:" -l "help,verbose,exclude:,config:" -n "$ME" -- "$@")
+ARGS=$(getopt -o "hve:c:" -l "help,verbose,exclude:,config-file:" -n "$ME" -- "$@")
 eval set -- "$ARGS"
 unset POSIXLY_CORRECT
 
@@ -104,11 +104,12 @@ while true; do
     esac
 done
 
+[ $VERBOSITY -gt 0 ] && echo "Got these XML files: $*"
 
-if [ -z "$*" ]; then
-  echo "::error::No XML files found"
-  exit 40
-fi
+# if [ ! -z "$*" ]; then
+#  echo "::error::No XML files found"
+#  exit 40
+# fi
 
 # Create an array with all of our XML files:
 ALLXMLFILES=($*)
