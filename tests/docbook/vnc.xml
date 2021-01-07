@@ -14,21 +14,14 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
    <dm:translation>yes</dm:translation>
   </dm:docmanager>
   <abstract>
-   <para>
-    Virtual Network Computing (VNC) enables you to access a remote computer via
-    a graphical desktop, and run remote graphical applications. VNC is
-    platform-independent and accesses the remote machine from any operating
-    system. This chapter describes how to connect to a VNC server with the
-    desktop clients vncviewer and Remmina, and how to operate a VNC server.
-   </para>
-
+   <para> Virtual Network Computing (VNC) enables you to access a remote computer via
+    a graphical desktop, and run remote graphical applications. VNC is platform-independent and accesses the remote machine from any operating system. This chapter describes how to connect to a VNC server with the desktop clients vncviewer and Remmina, and how to operate a VNC server.  </para>
    <para>
     &productname; supports two different kinds of VNC sessions: One-time
     sessions that <quote>live</quote> as long as the VNC connection from the
     client is kept up, and persistent sessions that <quote>live</quote> until
     they are explicitly terminated.
    </para>
-
    <para>
     A VNC server can offer both kinds of sessions simultaneously on different
     ports, but an open session cannot be converted from one type to the other.
@@ -37,7 +30,6 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
  </info>
  <sect1 xml:id="sec-vnc-viewer">
   <title>The <command>vncviewer</command> Client</title>
-
   <important os="osuse">
    <title>Supported Display Managers</title>
    <para>
@@ -49,29 +41,27 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     the default display manager, remember to log out of the current X session
     and restart the display manager with
    </para>
-<screen>
+   <screen>
 &prompt.user;sudo systemctl restart xdm.service
 </screen>
   </important>
-
   <para>
    To connect to a VNC service provided by a server, a client is needed. The
    default in &productname; is <command>vncviewer</command>, provided by the
    <systemitem class="resource">tigervnc</systemitem> package.
   </para>
-
   <sect2 xml:id="sec-vnc-viewer-connectcli">
    <title>Connecting Using the vncviewer CLI</title>
    <para>
     To start your VNC viewer and initiate a session with the server, use the
     command:
    </para>
-<screen>&prompt.user;vncviewer &wsIname;:1</screen>
+   <screen>&prompt.user;vncviewer &wsIname;:1</screen>
    <para>
     Instead of the VNC display number you can also specify the port number with
     two colons:
    </para>
-<screen>&prompt.user;vncviewer &wsIname;::5901</screen>
+   <screen>&prompt.user;vncviewer &wsIname;::5901</screen>
    <note>
     <title>Display and Port Number</title>
     <para>
@@ -82,7 +72,6 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     </para>
    </note>
   </sect2>
-
   <sect2 xml:id="sec-vnc-viewer-connectgui">
    <title>Connecting Using the vncviewer GUI</title>
    <para>
@@ -95,7 +84,8 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
    <figure xml:id="fig-vnc-viewer-connectgui">
     <title>vncviewer</title>
     <mediaobject>
-     <textobject role="description"><phrase>vncviewer asking for connection details</phrase>
+     <textobject role="description">
+      <phrase>vncviewer asking for connection details</phrase>
      </textobject>
      <imageobject role="html">
       <imagedata fileref="vnc_connect.png" format="PNG"/>
@@ -106,7 +96,6 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     </mediaobject>
    </figure>
   </sect2>
-
   <sect2 xml:id="sec-vnc-viewer-encrypt">
    <title>Notification of Unencrypted Connections</title>
    <para>
@@ -119,12 +108,10 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
  </sect1>
  <sect1 xml:id="vnc-remmina">
   <title>Remmina: the Remote Desktop Client</title>
-
   <para>
    Remmina is a modern and feature rich remote desktop client. It supports
    several access methods, for example VNC, SSH, RDP, and Spice.
   </para>
-
   <sect2 xml:id="vnc-remmina-install">
    <title>Installation</title>
    <para>
@@ -132,11 +119,10 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     installed on your system, and install it if not. Remember to install the
     VNC plug-in for Remmina as well:
    </para>
-<screen>
+   <screen>
 &prompt.root;zypper in remmina remmina-plugin-vnc
 </screen>
   </sect2>
-
   <sect2 xml:id="vnc-remmina-usage">
    <title>Main Window</title>
    <para>
@@ -160,7 +146,6 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     global preferences.
    </para>
   </sect2>
-
   <sect2 xml:id="vnc-remmina-addnew">
    <title>Adding Remote Sessions</title>
    <para>
@@ -247,7 +232,6 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     the main window.
    </para>
   </sect2>
-
   <sect2 xml:id="vnc-remmina-start">
    <title>Starting Remote Sessions</title>
    <para>
@@ -306,7 +290,6 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     </figure>
    </sect3>
   </sect2>
-
   <sect2 xml:id="vnc-remmina-edit-delete-clone">
    <title>Editing, Copying, and Deleting Saved Sessions</title>
    <para>
@@ -328,7 +311,6 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     <guimenu>Yes</guimenu> in the next dialog.
    </para>
   </sect2>
-
   <sect2 xml:id="vnc-remmina-cmdline">
    <title>Running Remote Sessions from the Command Line</title>
    <para>
@@ -336,7 +318,7 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     file without first opening the main application window, use the following
     syntax:
    </para>
-<screen>
+   <screen>
  &prompt.user;remmina -c <replaceable>profile_name</replaceable>.remmina
 </screen>
    <para>
@@ -367,7 +349,6 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
  </sect1>
  <sect1 xml:id="sec-vnc-one-time">
   <title>Configuring One-time Sessions on the VNC Server</title>
-
   <para>
    A one-time session is initiated by the remote client. It starts a graphical
    login screen on the server. This way you can choose the user which starts
@@ -377,13 +358,15 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
    VNC sessions cannot be shared, but it is possible to have multiple sessions
    on a single host at the same time.
   </para>
-
   <procedure xml:id="pro-vnc-one-time-activate">
    <title>Enabling One-time VNC Sessions</title>
    <step>
     <para>
-     Start <menuchoice> <guimenu>&yast;</guimenu> <guimenu>Network
-     Services</guimenu> <guimenu>Remote Administration (VNC)</guimenu>
+     Start <menuchoice>
+      <guimenu>&yast;</guimenu>
+      <guimenu>Network
+     Services</guimenu>
+      <guimenu>Remote Administration (VNC)</guimenu>
      </menuchoice>.
     </para>
    </step>
@@ -428,7 +411,6 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     </tip>
    </step>
   </procedure>
-
   <figure>
    <title>Remote Administration</title>
    <mediaobject>
@@ -440,7 +422,6 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     </imageobject>
    </mediaobject>
   </figure>
-
   <sect2 xml:id="sec-vnc-one-time-configs">
    <title>Available Configurations</title>
    <para>
@@ -454,7 +435,8 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
    <para>
     Other configurations can be made available on different
     ports<phrase os="sles;osuse">, see
-    <xref linkend="sec-vnc-one-time-config"/></phrase>.<phrase os="sled"> Ask
+    <xref linkend="sec-vnc-one-time-config"/>
+    </phrase>.<phrase os="sled"> Ask
     your system administrator for details if you need to modify the
     configuration.</phrase>
    </para>
@@ -473,7 +455,6 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     connection&mdash;both in the VNC viewer and the Web browser.
    </para>
   </sect2>
-
   <sect2 xml:id="sec-vnc-one-time-connect">
    <title>Initiating a One-time VNC Session</title>
    <para>
@@ -483,7 +464,6 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     following URL: <literal>http://&wsIname;:5801</literal>
    </para>
   </sect2>
-
   <sect2 xml:id="sec-vnc-one-time-config">
    <title>Configuring One-time VNC Sessions</title>
    <para>
@@ -501,11 +481,11 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
    <para>
     To activate the VNC server socket at boot time, run the following command:
    </para>
-<screen>&prompt.sudo; systemctl enable xvnc.socket</screen>
+   <screen>&prompt.sudo; systemctl enable xvnc.socket</screen>
    <para>
     To start the socket immediately, run:
    </para>
-<screen>&prompt.sudo; systemctl start xvnc.socket</screen>
+   <screen>&prompt.sudo; systemctl start xvnc.socket</screen>
    <para>
     The <command>Xvnc</command> server can be configured via the
     <literal>server_args</literal> option. For a list of options, see
@@ -519,7 +499,7 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
    <para>
     Activate configuration changes by entering the following command:
    </para>
-<screen>&prompt.sudo;systemctl reload xvnc.socket</screen>
+   <screen>&prompt.sudo;systemctl reload xvnc.socket</screen>
    <important>
     <title>Firewall and VNC Ports</title>
     <para>
@@ -537,14 +517,12 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
  </sect1>
  <sect1 xml:id="sec-vnc-persistent">
   <title>Configuring Persistent VNC Server Sessions</title>
-
   <para>
    A persistent session can be accessed from multiple clients simultaneously.
    This is ideal for demonstration purposes where one client has full access
    and all other clients have view-only access. Another use case are training
    sessions where the trainer might need access to the trainee's desktop.
   </para>
-
   <tip xml:id="sec-vnc-persistent-connect">
    <title>Connecting to a Persistent VNC Session</title>
    <para>
@@ -554,11 +532,9 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     the following URL: <literal>http://&wsIname;:5801</literal>
    </para>
   </tip>
-
   <para>
    There are two types of persistent VNC sessions:
   </para>
-
   <itemizedlist>
    <listitem>
     <para>
@@ -571,9 +547,9 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     </para>
    </listitem>
   </itemizedlist>
-
   <sect2 xml:id="vnc-persistent-vncserver">
-   <title>VNC Session Initiated Using <systemitem>vncserver</systemitem></title>
+   <title>VNC Session Initiated Using <systemitem>vncserver</systemitem>
+   </title>
    <para>
     This type of persistent VNC session is initiated on the server. The session
     and all applications started in this session run regardless of client
@@ -597,7 +573,8 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
     A session can have multiple client connections of both kinds at once.
    </para>
    <procedure xml:id="pro-vnc-persistent-activate">
-    <title>Starting a Persistent VNC Session using <command>vncserver</command></title>
+    <title>Starting a Persistent VNC Session using <command>vncserver</command>
+    </title>
     <step>
      <para>
       Open a shell and make sure you are logged in as the user that should own
@@ -629,7 +606,7 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
       To start a session with a resolution of 1024x768 pixel and with a color
       depth of 16-bit, enter the following command:
      </para>
-<screen>vncserver -alwaysshared -geometry 1024x768 -depth 16</screen>
+     <screen>vncserver -alwaysshared -geometry 1024x768 -depth 16</screen>
      <para>
       The <command>vncserver</command> command picks an unused display number
       when none is given and prints its choice. See <command>man 1
@@ -676,7 +653,7 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
      with a window manager of your choice, set the variable
      <envar>WINDOWMANAGER</envar>:
     </para>
-<screen>WINDOWMANAGER=gnome vncserver -geometry 1024x768
+    <screen>WINDOWMANAGER=gnome vncserver -geometry 1024x768
 WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
     <note>
      <title>One Configuration for Each User</title>
@@ -688,16 +665,19 @@ WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
     </note>
    </sect3>
   </sect2>
-
   <sect2 xml:id="vnc-persistent-vncmanager">
-   <title>VNC Session Initiated Using <systemitem>vncmanager</systemitem></title>
+   <title>VNC Session Initiated Using <systemitem>vncmanager</systemitem>
+   </title>
    <para></para>
    <procedure xml:id="vnc-persistent-vncmanager-enable">
     <title>Enabling Persistent VNC Sessions</title>
     <step>
      <para>
-      Start <menuchoice> <guimenu>&yast;</guimenu> <guimenu>Network
-      Services</guimenu> <guimenu>Remote Administration (VNC)</guimenu>
+      Start <menuchoice>
+       <guimenu>&yast;</guimenu>
+       <guimenu>Network
+      Services</guimenu>
+       <guimenu>Remote Administration (VNC)</guimenu>
       </menuchoice>.
      </para>
     </step>
@@ -772,7 +752,9 @@ WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
     </para>
     <variablelist>
      <varlistentry>
-      <term><guimenu>Non-persistent, private</guimenu></term>
+      <term>
+       <guimenu>Non-persistent, private</guimenu>
+      </term>
       <listitem>
        <para>
         This is equivalent to a one-time session. It is not visible to others
@@ -783,7 +765,9 @@ WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><guimenu>Persistent, visible</guimenu></term>
+      <term>
+       <guimenu>Persistent, visible</guimenu>
+      </term>
       <listitem>
        <para>
         The session is visible to other users and keeps running even after you
@@ -792,7 +776,9 @@ WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><guimenu>Session name</guimenu></term>
+      <term>
+       <guimenu>Session name</guimenu>
+      </term>
       <listitem>
        <para>
         Here you can specify the name of the persistent session so that it is
@@ -801,7 +787,9 @@ WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><guimenu>No password required</guimenu></term>
+      <term>
+       <guimenu>No password required</guimenu>
+      </term>
       <listitem>
        <para>
         The session will be freely accessible without having to log in under
@@ -810,7 +798,9 @@ WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><guimenu>Require user login</guimenu></term>
+      <term>
+       <guimenu>Require user login</guimenu>
+      </term>
       <listitem>
        <para>
         You need to log in with a valid user name and password to access the
@@ -820,7 +810,9 @@ WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><guimenu>Allow one client at a time</guimenu></term>
+      <term>
+       <guimenu>Allow one client at a time</guimenu>
+      </term>
       <listitem>
        <para>
         Prevents multiple users from joining the session at the same time.
@@ -828,7 +820,9 @@ WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
       </listitem>
      </varlistentry>
      <varlistentry>
-      <term><guimenu>Allow multiple clients at a time</guimenu></term>
+      <term>
+       <guimenu>Allow multiple clients at a time</guimenu>
+      </term>
       <listitem>
        <para>
         Allows multiple users to join the persistent session at the same time.
@@ -871,13 +865,11 @@ WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
  </sect1>
  <sect1 xml:id="sec-vnc-encrypt">
   <title>Configuring Encryption on the VNC Server</title>
-
   <para>
    If the VNC server is set up properly, all communication between the VNC
    server and the client is encrypted. The authentication happens at the
    beginning of the session; the actual data transfer only begins afterward.
   </para>
-
   <para>
    Whether for a one-time or a persistent VNC session, security options are
    configured via the <option>-securitytypes</option> parameter of the
@@ -886,7 +878,6 @@ WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
    parameter selects both authentication method and encryption. It has the
    following options:
   </para>
-
   <variablelist>
    <title>Authentications</title>
    <varlistentry>
@@ -914,7 +905,6 @@ WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
     </listitem>
    </varlistentry>
   </variablelist>
-
   <variablelist>
    <title>Encryptions</title>
    <varlistentry>
@@ -958,14 +948,12 @@ WINDOWMANAGER=icewm vncserver -geometry 1024x768</screen>
     </listitem>
    </varlistentry>
   </variablelist>
-
   <para>
    If you select multiple security types separated by comma, the first one
    supported and allowed by both client and server will be used. That way you
    can configure opportunistic encryption on the server. This is useful if you
    need to support VNC clients that do not support encryption.
   </para>
-
   <para>
    On the client, you can also specify the allowed security types to prevent a
    downgrade attack if you are connecting to a server which you know has
