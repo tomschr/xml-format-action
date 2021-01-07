@@ -104,6 +104,22 @@ function getxmlformat {
   XMLFORMAT=${commands[0]}
 }
 
+function get_first_last_commits {
+# Get the SHAs of the first and last commit in this branch
+#
+# Parameters:
+#   n/a
+# Returns:
+#
+  local commits
+
+  readarray -t commits <<< $(git rev-list --simplify-by-decoration -2 HEAD)
+  echo "::group::Find last and parent commits..."
+  echo "Last commit:   ${commits[0]}"
+  echo "Parent commit: ${commits[1]}"
+  echo "::endgroup::"
+}
+
 function getgitfilelist {
 # Get a file list of added, copied, or renamed files of a specific commit
 #
@@ -114,8 +130,17 @@ function getgitfilelist {
 #    a sequence of files separated by space
 
     local SHA="${1}"
+    local commits
+    local first
+    local parent
+
+    # get the last and commit parent to the first commit of the branch (in this order)
+    readarray -t commits <<< $(git rev-list --simplify-by-decoration -2 HEAD)
+    last=${commits[0]}
+    parent=${commits[1]}
+
     # Only look for added, copied, modified, and renamed files:
-    FILES=$(git diff-tree --no-commit-id --name-only -r -m --diff-filter=ACMR $SHA)
+    FILES=$(git diff-tree --no-commit-id --name-only -r -m --diff-filter=ACMR $parent..$last)
     # Replace newlines with spaces:
     FILES="${FILES//$'\n'/ }"
     # Remove leading whitespace:
@@ -125,16 +150,6 @@ function getgitfilelist {
 
 getxmlformat
 
-
-if [ $VERBOSITY -gt 0 ]; then
-  echo "::group::xmlformat found..."
-  echo "$XMLFORMAT"
-  echo "::endgroup::"
-  echo "::group::Method 2 for finding xmlformat..."
-  readarray -t commands <<< $(type -a -p xmlformat xmlformat.rb xmlformat.pl)
-  echo ${commands[0]}
-  echo "::endgroup::"
-fi
 
 ## Parsing command line arguments:
 export POSIXLY_CORRECT=1
@@ -265,6 +280,16 @@ echo "::group::Content of GITHUB_EVENT_PATH..."
 cat $GITHUB_EVENT_PATH
 echo -e "\n::endgroup::"
 fi
+
+echo "::group::xmlformat found..."
+echo "$XMLFORMAT"
+echo "::endgroup::"
+echo "::group::Method 2 for finding xmlformat..."
+readarray -t commands <<< $(type -a -p xmlformat xmlformat.rb xmlformat.pl)
+echo ${commands[0]}
+echo "::endgroup::"
+
+get_first_last_commits
 
 echo "::group::Used CLI options..."
 echo "--config-file='$CONFIG'"
