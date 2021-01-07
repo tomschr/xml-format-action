@@ -213,7 +213,7 @@ while true; do
           # Use the downloaded file path:
           CONFIG="${BASE}"
        elif [ ! -e "$CONFIG" ]; then
-         echo "::error file=$CONFIG::File not found"
+         echo "::error file=$CONFIG::Configuration file not found"
          exit 20
        fi
        
@@ -251,6 +251,7 @@ if [ $VERBOSITY -gt 0 ]; then
 echo "::group::GitHub variables..."
 echo "GITHUB_WORKFLOW=$GITHUB_WORKFLOW"
 echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
+echo "GITHUB_EVENT_PATH : $GITHUB_EVENT_PATH"
 echo "GITHUB_ACTION=$GITHUB_ACTION"
 echo "GITHUB_ACTOR=$GITHUB_ACTOR"
 echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
@@ -265,7 +266,7 @@ echo "--message='$MESSAGE'"
 echo "--extensions='$EXTENSIONS'"
 echo "--excludes=${EXCLUDES[@]}"
 echo "--verbosity=$VERBOSITY"
-echo "--commit/--no-commit => $COMMIT"
+echo "--need-commit=$COMMIT"
 echo "commitsha=$COMMITSHA"
 echo "::endgroup::"
 fi
