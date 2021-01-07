@@ -67,15 +67,16 @@ Options:
                      globs (default: "${EXTENSIONS[@]}").
 
 Arguments:
-  COMMITSHA          The commit to search for XML files.
+  COMMIT            The commit to search for XML files. Can be a
+                    40 SHA or HEAD
 
 Examples:
 
   * Investigate current commit:
     $ $ME HEAD
 
-  * Add the file extensions mml and svg to search for commit 1234567:
-    $ $ME -x svg -x mml 1234567
+  * Add the file extensions mml and svg to search for commit 1a3b5c7:
+    $ $ME -x svg -x mml 1a3b5c7
 
   * Add the file extensions mml and svg, but don't format "foo.mml":
     $ $ME -x "svg mml" -e "foo.mml"
@@ -234,7 +235,20 @@ fi
 EXTENSIONS=($(echo "${EXTENSIONS[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
 EXCLUDES=($(echo "${EXCLUDES[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
 
-echo "::group::Used parameters..."
+if [ $VERBOSITY -gt 0 ]; then
+# https://docs.github.com/en/free-pro-team@latest/actions/reference/environment-variables#default-environment-variables
+echo "::group::GitHub variables..."
+echo "GITHUB_WORKFLOW=$GITHUB_WORKFLOW"
+echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
+echo "GITHUB_ACTION=$GITHUB_ACTION"
+echo "GITHUB_ACTOR=$GITHUB_ACTOR"
+echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
+echo "GITHUB_SHA=$GITHUB_SHA"
+echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
+echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
+echo "::endgroup::"
+
+echo "::group::Used CLI options..."
 echo "--config-file='$CONFIG'"
 echo "--message='$MESSAGE'"
 echo "--extensions='$EXTENSIONS'"
@@ -243,6 +257,7 @@ echo "--verbosity=$VERBOSITY"
 echo "--commit/--no-commit => $COMMIT"
 echo "commitsha=$COMMITSHA"
 echo "::endgroup::"
+fi
 
 
 # Create an array with all of our XML files of the given commit:
