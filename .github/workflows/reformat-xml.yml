@@ -2,8 +2,7 @@
 on:
   push:
     paths:
-      - 'tests/xml/*.xml'
-      - 'tests/docbook/*.xml'
+      - 'tests/*.xml'
 
 
 jobs:
@@ -55,7 +54,7 @@ jobs:
         uses: ./
         with:
           exclude-files: |
-            tests/docbook/schemas.xml
+            tests/schemas.xml
           config: https://github.com/openSUSE/daps/raw/main/etc/docbook-xmlformat.conf
       
       - name: Check steps outputs
