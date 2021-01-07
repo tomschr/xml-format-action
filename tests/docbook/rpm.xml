@@ -4,36 +4,24 @@
   <!ENTITY % entities SYSTEM "entity-decl.ent">
     %entities;
 ]>
-
 <sect1 version="5.0" xml:id="sec-rpm"
        xmlns="http://docbook.org/ns/docbook"
        xmlns:xi="http://www.w3.org/2001/XInclude"
        xmlns:xlink="http://www.w3.org/1999/xlink">
-       <title>RPM&mdash;the Package Manager</title
-   >
-
-info>
-<dm:docmanager xmlns:dm="urn:x-suse:ns:docmanager">
-<dm:bugtracker/>
-<dm:translation>yes</dm:translation>
-</dm:docmanager>
+ <title>RPM&mdash;the Package Manager</title>
+ <info>
+  <dm:docmanager xmlns:dm="urn:x-suse:ns:docmanager">
+   <dm:bugtracker/>
+   <dm:translation>yes</dm:translation>
+  </dm:docmanager>
  </info>
-
- <para>
-  RPM (RPM Package Manager) is used for managing software packages. Its main
-  commands are <command>rpm</command> and <command>rpmbuild</command>. The
-  powerful RPM database can be queried by the users, system administrators and
-  package builders for detailed information about the installed software.
- </para>
-
+ <para> RPM (RPM Package Manager) is used for managing software packages. Its main commands are <command>rpm</command> and <command>rpmbuild</command>. The powerful RPM database can be queried by the users, system administrators and package builders for detailed information about the installed software.  </para>
  <para>
   <command>rpm</command> has five modes: installing, uninstalling (or updating)
   software packages, rebuilding the RPM database, querying RPM bases or
   individual RPM archives, integrity checking of packages and signing packages.
   <command>rpmbuild</command> can be used to build installable packages from
-  pristine sources.
- </para>
-
+  pristine sources.  </para>
  <para>
   Installable RPM archives are packed in a special binary format. These
   archives consist of the program files to install and certain meta information
@@ -41,7 +29,6 @@ info>
   software package or stored in the RPM database for documentation purposes.
   RPM archives normally have the extension <filename>.rpm</filename>.
  </para>
-
  <tip>
   <title>Software Development Packages</title>
   <para>
@@ -54,7 +41,6 @@ info>
    <systemitem class="resource">gimp-devel</systemitem>.
   </para>
  </tip>
-
  <sect2 xml:id="sec-rpm-package-auth">
   <title>Verifying Package Authenticity</title>
   <para>
@@ -72,18 +58,18 @@ info>
    &sle; 11, this key is not imported by default on &sle; 12 systems. To
    manually import the key, use the following command:
   </para>
-<screen os="sles;sled">&prompt.sudo;rpm --import \
+  <screen os="sles;sled">&prompt.sudo;rpm --import \
 /usr/share/doc/packages/suse-build-key/suse_ptf_key.asc</screen>
   <para os="sles;sled">
    After importing the key, you can install PTF packages on your system.
   </para>
  </sect2>
-
  <sect2 xml:id="sec-rpm-packages-manage">
   <title>Managing Packages: Install, Update, and Uninstall</title>
   <para>
    Normally, the installation of an RPM archive is quite simple: <command>rpm
-   -i</command> <replaceable>PACKAGE</replaceable>.rpm. With this command the
+   -i</command>
+   <replaceable>PACKAGE</replaceable>.rpm. With this command the
    package is installed, but only if its dependencies are fulfilled and if
    there are no conflicts with other packages. With an error message,
    <command>rpm</command> requests those packages that need to be installed to
@@ -170,7 +156,6 @@ info>
    database using the option <option>--rebuilddb</option>.
   </para>
  </sect2>
-
  <sect2 xml:id="sec-rpm-delta">
   <title>Delta RPM Packages</title>
   <para>
@@ -191,23 +176,22 @@ info>
    <filename>new.delta.rpm</filename>. The following command assumes that
    <filename>old.rpm</filename> and <filename>new.rpm</filename> are present:
   </para>
-<screen>&prompt.sudo;makedeltarpm old.rpm new.rpm new.delta.rpm</screen>
+  <screen>&prompt.sudo;makedeltarpm old.rpm new.rpm new.delta.rpm</screen>
   <para>
    Using <command>applydeltarpm</command>, you can reconstruct the new RPM from
    the file system if the old package is already installed:
   </para>
-<screen>&prompt.sudo;applydeltarpm new.delta.rpm new.rpm</screen>
+  <screen>&prompt.sudo;applydeltarpm new.delta.rpm new.rpm</screen>
   <para>
    To derive it from the old RPM without accessing the file system, use the
    <option>-r</option> option:
   </para>
-<screen>&prompt.sudo;applydeltarpm -r old.rpm new.delta.rpm new.rpm</screen>
+  <screen>&prompt.sudo;applydeltarpm -r old.rpm new.delta.rpm new.rpm</screen>
   <para>
    See <filename>/usr/share/doc/packages/deltarpm/README</filename> for
    technical details.
   </para>
  </sect2>
-
  <sect2 xml:id="sec-rpm-query">
   <title>RPM Queries</title>
   <para>
@@ -353,8 +337,11 @@ info>
    information shown in <xref linkend="aus-update-rpm-i"/>.
   </para>
   <example xml:id="aus-update-rpm-i">
-   <title><command>rpm -q -i wget</command></title>
-<screen os="osuse"><?dbsuse-fo font-size="0.70em"?>Name        : wget
+   <title>
+    <command>rpm -q -i wget</command>
+   </title>
+   <screen os="osuse">
+<?dbsuse-fo font-size="0.70em"?>Name        : wget
 Name        : wget
 Version     : 1.19.5
 Release     : lp151.4.1
@@ -377,7 +364,8 @@ Wget enables you to retrieve WWW documents or FTP files from a server.
 This can be done in script files or via the command line.
 Distribution: openSUSE Leap 15.1
 </screen>
-<screen os="sles;sled"><?dbsuse-fo font-size="0.70em"?>
+   <screen os="sles;sled">
+<?dbsuse-fo font-size="0.70em"?>
 Name        : wget
 Version     : 1.14
 Release     : 17.1
@@ -405,7 +393,7 @@ Distribution: SUSE Linux Enterprise 15
    The option <option>-f</option> only works if you specify the complete file
    name with its full path. Provide as many file names as desired. For example:
   </para>
-<screen>&prompt.user;rpm -q -f /bin/rpm /usr/bin/wget
+  <screen>&prompt.user;rpm -q -f /bin/rpm /usr/bin/wget
 rpm-4.14.1-lp151.13.10.x86_64
 wget-1.19.5-lp151.4.1.x86_64
 </screen>
@@ -416,7 +404,7 @@ wget-1.19.5-lp151.4.1.x86_64
   </para>
   <example xml:id="dat-rpm-search">
    <title>Script to Search for Packages</title>
-<screen>#! /bin/sh
+   <screen>#! /bin/sh
 for i in $(rpm -q -a -l | grep $1); do
     echo "\"$i\" is in package:"
     rpm -q -f $i
@@ -543,7 +531,7 @@ done</screen>
    printed. For example, for changes to <filename>/etc/wgetrc</filename>
    (<systemitem class="resource">wget</systemitem> package):
   </para>
-<screen>&prompt.user;rpm -V wget
+  <screen>&prompt.user;rpm -V wget
 S.5....T c /etc/wgetrc</screen>
   <para>
    The files of the RPM database are placed in
@@ -561,7 +549,6 @@ S.5....T c /etc/wgetrc</screen>
    approximately 1&nbsp;MB for 1&nbsp;GB in <filename>/usr</filename>.
   </para>
  </sect2>
-
  <sect2 xml:id="sec-rpm-sources">
   <title>Installing and Compiling Source Packages</title>
   <para>
@@ -588,7 +575,9 @@ S.5....T c /etc/wgetrc</screen>
   </para>
   <variablelist>
    <varlistentry>
-    <term><filename>SOURCES</filename></term>
+    <term>
+     <filename>SOURCES</filename>
+    </term>
     <listitem>
      <para>
       for the original sources (<filename>.tar.bz2</filename> or
@@ -599,7 +588,9 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><filename>SPECS</filename></term>
+    <term>
+     <filename>SPECS</filename>
+    </term>
     <listitem>
      <para>
       for the <filename>.spec</filename> files, similar to a meta Makefile,
@@ -608,7 +599,9 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><filename>BUILD</filename></term>
+    <term>
+     <filename>BUILD</filename>
+    </term>
     <listitem>
      <para>
       all the sources are unpacked, patched and compiled in this directory
@@ -616,7 +609,9 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><filename>RPMS</filename></term>
+    <term>
+     <filename>RPMS</filename>
+    </term>
     <listitem>
      <para>
       where the completed binary packages are stored
@@ -624,7 +619,9 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><filename>SRPMS</filename></term>
+    <term>
+     <filename>SRPMS</filename>
+    </term>
     <listitem>
      <para>
       here are the source RPMs
@@ -652,11 +649,13 @@ S.5....T c /etc/wgetrc</screen>
    After installing the source package, you should have files similar to those
    in the following list:
   </para>
-<screen>/usr/src/packages/SOURCES/wget-1.19.5.tar.bz2
+  <screen>/usr/src/packages/SOURCES/wget-1.19.5.tar.bz2
 /usr/src/packages/SOURCES/wgetrc.patch
 /usr/src/packages/SPECS/wget.spec</screen>
   <para>
-   <command>rpmbuild</command> <option>-b<replaceable>X</replaceable></option>
+   <command>rpmbuild</command>
+   <option>-b<replaceable>X</replaceable>
+   </option>
    <filename>/usr/src/packages/SPECS/wget.spec</filename> starts the
    compilation. <replaceable>X</replaceable> is a wild card for various stages
    of the build process (see the output of <option>--help</option> or the RPM
@@ -664,7 +663,9 @@ S.5....T c /etc/wgetrc</screen>
   </para>
   <variablelist>
    <varlistentry>
-    <term><option>-bp</option></term>
+    <term>
+     <option>-bp</option>
+    </term>
     <listitem>
      <para>
       Prepare sources in <filename>/usr/src/packages/BUILD</filename>: unpack
@@ -673,7 +674,9 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><option>-bc</option></term>
+    <term>
+     <option>-bc</option>
+    </term>
     <listitem>
      <para>
       Do the same as <option>-bp</option>, but with additional compilation.
@@ -681,7 +684,9 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><option>-bi</option></term>
+    <term>
+     <option>-bi</option>
+    </term>
     <listitem>
      <para>
       Do the same as <option>-bp</option>, but with additional installation of
@@ -691,7 +696,9 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><option>-bb</option></term>
+    <term>
+     <option>-bb</option>
+    </term>
     <listitem>
      <para>
       Do the same as <option>-bi</option>, but with the additional creation of
@@ -701,7 +708,9 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><option>-ba</option></term>
+    <term>
+     <option>-ba</option>
+    </term>
     <listitem>
      <para>
       Do the same as <option>-bb</option>, but with the additional creation of
@@ -711,7 +720,9 @@ S.5....T c /etc/wgetrc</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><option>--short-circuit</option></term>
+    <term>
+     <option>--short-circuit</option>
+    </term>
     <listitem>
      <para>
       Skip some steps.
@@ -727,18 +738,17 @@ S.5....T c /etc/wgetrc</screen>
   </para>
   <para>
    Keep in mind, the <literal>BuildRoot</literal> directive in the spec file is
-   deprecated since &productname;
-   <phrase os="sles;sled">12</phrase><phrase
-   os="osuse">42.1</phrase>. If
-   you still need this feature, use the <option>--buildroot</option> option as
-   a workaround. <phrase
-   os="sles;sled">For more detailed background
-   information, see the support database at
+   deprecated since &productname; <phrase os="sles;sled">12</phrase>
+   <phrase
+   os="osuse">42.1</phrase>. If you still need this feature, use the
+   <option>--buildroot</option> option as a workaround.
+   <phrase
+   os="sles;sled">For more detailed background information, see the
+   support database at
    <link
    xlink:href="https://www.suse.com/support/kb/doc?id=7017104"/>.</phrase>
   </para>
  </sect2>
-
  <sect2 xml:id="sec-rpm-build">
   <title>Compiling RPM Packages with build</title>
   <para>
@@ -755,7 +765,7 @@ S.5....T c /etc/wgetrc</screen>
    the above example) with the DVD mounted in the system under
    <filename>/media/dvd</filename>, use the following commands as &rootuser;:
   </para>
-<screen>&prompt.root;cd /usr/src/packages/SOURCES/
+  <screen>&prompt.root;cd /usr/src/packages/SOURCES/
 &prompt.root;mv ../SPECS/wget.spec .
 &prompt.root;build --rpms /media/dvd/suse/ wget.spec</screen>
   <para>
@@ -769,11 +779,11 @@ S.5....T c /etc/wgetrc</screen>
    example, cause the script to prefer your own RPMs, omit the initialization
    of the build environment or limit the <command>rpm</command> command to one
    of the above-mentioned stages. Access additional information with
-   <command>build</command> <option>--help</option> and by reading the
+   <command>build</command>
+   <option>--help</option> and by reading the
    <command>build</command> man page.
   </para>
  </sect2>
-
  <sect2 xml:id="sec-rpm-tools">
   <title>Tools for RPM Archives and the RPM Database</title>
   <para>

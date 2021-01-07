@@ -10,10 +10,28 @@ jobs:
   reformat-xml:
     # Use only branches, but skip tags
     if: startsWith(github.ref, 'refs/heads/')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
+      - name: List some important versions
+        run: |
+          bash --version
+          echo "curl version..."
+          curl --version || true
+          echo "wget version..."
+          wget --version || true
+
       - uses: actions/checkout@v2
+        with:
+           # Number of commits to fetch.
+           # 0 indicates all history for all branches and tags.
+           # This is absolutely needed for this action!
+           fetch-depth: 0
+
+      - name: Set Git user and email...
+        run: |
+          git config --local user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --local user.name "XML Reformat Bot"
 
       - name: List action metadata
         run: |
@@ -29,35 +47,34 @@ jobs:
           echo -e "workspace  : ${{ github.workspace }}"
 
       - name: Format XML
+        id: reformat1
         uses: ./
 
       - name: Format DocBook XML
-        # if: startsWith(github.ref, 'refs/heads/')
+        id: reformat2
         uses: ./
         with:
           exclude-files: tests/docbook/schemas.xml
           config: https://github.com/openSUSE/daps/raw/main/etc/docbook-xmlformat.conf
-
-      - name: Configure Git
-        run: |
-          git config --local user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --local user.name "XML Reformat Bot"
-
-      - name: Commit
-        run: |
-          git commit --all -m"[Auto] Reformat XML Files" || true
       
       - name: Checks if we have a tag
         id: isreftag
         run: |
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-              echo "::set-output name=istag::true"
+              echo "::set-output name=istag::${{ true }}"
           else
-              echo "::set-output name=istag::false"
+              echo "::set-output name=istag::${{ false }}"
           fi
+
+      - name: Check steps outputs
+        run: |
+           echo "istag=${{ steps.isreftag.outputs.istag }}"
+           echo "steps.reformat1.outputs.xmlfound=${{ steps.reformat1.outputs.xmlfound }}"
+           echo "steps.reformat2.outputs.xmlfound=${{ steps.reformat2.outputs.xmlfound }}"
 
       - name: Push
         # if: ${{ steps.isreftag.outputs.istag }} == 'false'
+        if: ${{ steps.reformat1.outputs.xmlfound }} == true || ${{ steps.reformat2.outputs.xmlfound }} == true
         run: |
             # Remove any refs/*/ parts:
             BRANCH="${GITHUB_REF#refs/heads/}"
