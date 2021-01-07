@@ -2,8 +2,7 @@
 on:
   push:
     paths:
-      - 'tests/xml/*.xml'
-      - 'tests/docbook/*.xml'
+      - 'tests/*.xml'
 
 
 jobs:
@@ -20,6 +19,8 @@ jobs:
           curl --version || true
           echo "wget version..."
           wget --version || true
+          echo "jq --version..."
+          jq --version || true
 
       - uses: actions/checkout@v2
         with:
@@ -35,50 +36,40 @@ jobs:
 
       - name: List action metadata
         run: |
-          echo -e "action     : ${{ github.action }}"
-          echo -e "actor      : ${{ github.actor }}"
-          echo -e "event_name : ${{ github.event_name }}"
-          echo -e "job        : ${{ github.job }}"
-          echo -e "ref        : ${{ github.ref }}"
-          echo -e" repository : ${{ github.repository }}"
-          echo -e "run_id     : ${{ github.run_id }}"
-          echo -e "sha        : ${{ github.sha }}"
-          echo -e "workflow   : ${{ github.workflow }}"
-          echo -e "workspace  : ${{ github.workspace }}"
+          echo -e "github.action     : ${{ github.action }}"
+          echo -e "github.actor      : ${{ github.actor }}"
+          echo -e "github.event_name : ${{ github.event_name }}"
+          echo -e "github.job        : ${{ github.job }}"
+          echo -e "github.ref        : ${{ github.ref }}"
+          echo -e "github.base.ref   : ${{ github.event.pull_request.base.ref }}"
+          echo -e" github.repository : ${{ github.repository }}"
+          echo -e "github.run_id     : ${{ github.run_id }}"
+          echo -e "github.sha        : ${{ github.sha }}"
+          echo -e "github.workflow   : ${{ github.workflow }}"
+          echo -e "github.workspace  : ${{ github.workspace }}"
 
-      - name: Format XML
-        id: reformat1
-        uses: ./
+      # - name: Format XML
+      #  id: reformat1
+      #  uses: ./
 
       - name: Format DocBook XML
-        id: reformat2
+        id: dbxml
         uses: ./
         with:
           exclude-files: |
-            tests/docbook/schemas.xml
+            tests/schemas.xml
           config: https://github.com/openSUSE/daps/raw/main/etc/docbook-xmlformat.conf
       
-      - name: Checks if we have a tag
-        id: isreftag
-        run: |
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-              echo "::set-output name=istag::${{ true }}"
-          else
-              echo "::set-output name=istag::${{ false }}"
-          fi
-
       - name: Check steps outputs
         run: |
            echo "istag=${{ steps.isreftag.outputs.istag }}"
-           echo "steps.reformat1.outputs.xmlfound=${{ steps.reformat1.outputs.xmlfound }}"
-           echo "steps.reformat2.outputs.xmlfound=${{ steps.reformat2.outputs.xmlfound }}"
+           # echo "steps.reformat1.outputs.xmlfound=${{ steps.reformat1.outputs.xmlfound }}"
+           echo "steps.dbxml.outputs.xmlfound=${{ steps.dbxml.outputs.xmlfound }}"
 
       - name: Push
-        # if: ${{ steps.isreftag.outputs.istag }} == 'false'
-        if: ${{ steps.reformat1.outputs.xmlfound }} == true || ${{ steps.reformat2.outputs.xmlfound }} == true
+        if: ${{ steps.dbxml.outputs.xmlfound }}
         run: |
-            # Remove any refs/*/ parts:
+            # Remove any refs/heads/ parts:
             BRANCH="${GITHUB_REF#refs/heads/}"
-            # BRANCH="${BRANCH#refs/tags/}"
             URL="https://${{github.actor}}:${{secrets.SOURCE_PUSH_TOKEN}}@github.com/${{github.repository}}.git"
             git push "$URL" "$BRANCH"
