@@ -1,6 +1,6 @@
 # xml-format-action
 
-GitHub Action to formats XML files with the `xmlformat` tool.
+GitHub Action to formats all XML files of the current commit with the `xmlformat` tool.
 
 
 ## Design
@@ -207,6 +207,18 @@ jobs:
            exclude-files: "xml/schemas.xml"
 ```
 
+If you want to exclude more than one file, use the pipe (`|`)
+symbol:
+
+```yaml
+- name: Format XML
+  uses: tomschr/xml-format-action@v1
+  with:
+    exclude-files: |
+      xml/foo.xml
+      xml/bar.xml
+```
+
 ## Use case: Including XML files with different extensions
 
 In some cases you have your XML files which does not end up with `.xml`.
@@ -233,6 +245,19 @@ jobs:
         uses: tomschr/xml-format-action@v1
         with:
            extensions: "mml"
+```
+
+You can also use the pipe (`|`) symbol to add more than
+one file extension:
+
+```yaml
+- name: Format XML
+  uses: tomschr/xml-format-action@v1
+  with:
+    extension: |
+      xml
+      svg
+      mml
 ```
 
 
@@ -263,12 +288,10 @@ jobs:
 ```
 
 
-## Committing reformatted files
+## Pushing reformatted XML files
 
-The GitHub Action just reformats the XML files (excluding
-the exclusion list); it does not commit nor push any files.
+The GitHub Action reformats the XML files (excluding
+the exclusion list) and commits them. However, it does not push any files.
 
-If you want to commit and push reformatted XML files, you
-have the following options:
-
-* [actions-go/push](https://github.com/actions-go/push)
+If you want to push reformatted XML files to your GitHub
+repository, use the [actions-go/push](https://github.com/actions-go/push) action.
