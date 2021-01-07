@@ -46,9 +46,9 @@ jobs:
           echo -e "workflow   : ${{ github.workflow }}"
           echo -e "workspace  : ${{ github.workspace }}"
 
-      - name: Format XML
-        id: reformat1
-        uses: ./
+      # - name: Format XML
+      #  id: reformat1
+      #  uses: ./
 
       - name: Format DocBook XML
         id: reformat2
