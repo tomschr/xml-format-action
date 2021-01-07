@@ -1,3 +1,4 @@
+# https://docs.github.com/en/free-pro-team@latest/actions/creating-actions/metadata-syntax-for-github-actions
 name: 'XML reformat'
 description: 'Reformat XML files'
 

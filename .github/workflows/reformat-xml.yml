@@ -19,6 +19,8 @@ jobs:
           curl --version || true
           echo "wget version..."
           wget --version || true
+          echo "jq --version..."
+          jq --version || true
 
       - uses: actions/checkout@v2
         with:
@@ -39,6 +41,7 @@ jobs:
           echo -e "github.event_name : ${{ github.event_name }}"
           echo -e "github.job        : ${{ github.job }}"
           echo -e "github.ref        : ${{ github.ref }}"
+          echo -e "github.base.ref   : ${{ github.event.pull_request.base.ref }}"
           echo -e" github.repository : ${{ github.repository }}"
           echo -e "github.run_id     : ${{ github.run_id }}"
           echo -e "github.sha        : ${{ github.sha }}"
