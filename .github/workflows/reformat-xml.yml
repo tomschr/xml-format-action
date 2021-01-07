@@ -34,6 +34,14 @@ jobs:
           git config --local user.email "${{ github.actor }}@users.noreply.github.com"
           git config --local user.name "XML Reformat Bot"
 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "::group::Output GitHub context..."
+          echo "$GITHUB_CONTEXT"
+          echo "::endgroup::"
+
       - name: List action metadata
         run: |
           echo "github.action     : ${{ github.action }}"

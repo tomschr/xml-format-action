@@ -29,7 +29,9 @@
   software package or stored in the RPM database for documentation purposes.
   RPM archives normally have the extension <filename>.rpm</filename>.
  </para>
- <tip><title>Software Development Packages</title><para>
+ <tip>
+  <title>Software Development Packages</title>
+  <para>
    For several packages, the components needed for software development
    (libraries, headers, include files, etc.) have been put into separate
    packages. These development packages are only needed if you want to compile

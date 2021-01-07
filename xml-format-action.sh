@@ -260,6 +260,12 @@ echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
 echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
 echo "::endgroup::"
 
+if [ $VERBOSITY -gt 1 ]; then
+echo "::group::Content of GITHUB_EVENT_PATH..."
+cat $GITHUB_EVENT_PATH
+echo -e "\n::endgroup::"
+fi
+
 echo "::group::Used CLI options..."
 echo "--config-file='$CONFIG'"
 echo "--message='$MESSAGE'"
