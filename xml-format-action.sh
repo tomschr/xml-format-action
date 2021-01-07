@@ -19,6 +19,9 @@ XMLFORMAT=""
 # The default commit message for reformatting the XML files:
 MESSAGE="[xml-format-action] Auto reformatting XML Files"
 
+# Filename where to add commit messages:
+FILE_COMMIT="/tmp/commit-message.txt"
+
 # The verbosity level
 VERBOSITY=0
 
@@ -96,6 +99,7 @@ function getxmlformat {
 
   local commands
 
+  # readarray -t commands <<< $(type -a -p xmlformat xmlformat.rb xmlformat.pl)
   commands=( $(whereis -b xmlformat | cut -d ' ' -f2) )
   XMLFORMAT=${commands[0]}
 }
@@ -121,9 +125,14 @@ function getgitfilelist {
 
 getxmlformat
 
+
 if [ $VERBOSITY -gt 0 ]; then
   echo "::group::xmlformat found..."
   echo "$XMLFORMAT"
+  echo "::endgroup::"
+  echo "::group::Method 2 for finding xmlformat..."
+  readarray -t commands <<< $(type -a -p xmlformat xmlformat.rb xmlformat.pl)
+  echo ${commands[0]}
   echo "::endgroup::"
 fi
 
@@ -306,7 +315,15 @@ else
     echo "::set-output name=xmlfound::true"
     if [ $COMMIT -eq 1 ]; then
       echo "::group::Committing changed XML files..."
-      git commit -m"$MESSAGE" "${XMLFILES[@]}" || true
+      cat > $FILE_COMMIT << EOF
+${MESSAGE}
+
+Co-authored-by: <${GITHUB_ACTOR}@users.noreply.github.com>
+EOF
+      git commit --file="$FILE_COMMIT" "${XMLFILES[@]}" || true
       echo "::endgroup::"
+      echo "::set-output name=commit::true"
+    else
+      echo "::set-output name=commit::false"
     fi
 fi
