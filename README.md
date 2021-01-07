@@ -1,4 +1,4 @@
-# xml-format-action
+# xml-format-action v1
 
 GitHub Action to formats all XML files of the current commit with the `xmlformat` tool.
 
@@ -14,11 +14,12 @@ This GitHub Action takes care of:
 * Investigates what files are integrated in the commit.
 * Optionally, lets you set a configuration file. If it's a remote address,
   it will download the config file automatically.
-* Optionally, define a list of excluding files.
+* Optionally, define a list of excluded files.
 * Optionally, lets you define a list of allowed file extensions.
 * Optionally, lets you commit the changed XML files.
 
-The GitHub Action **does not** push the changed XML files automatically.
+The GitHub Action **does not** push the changed XML files automatically. You have to do it after you have formatted
+the files (see [Pushing reformatted XML files](#pushing).)
 
 
 ## Prerequisites
@@ -91,11 +92,18 @@ on:
 
 Name             | Type     | Default | Explanation
 -----------------|----------|---------|-----------------------------------------
-`commit`         | bool     | true    | flag: should the formatted files committed?
+`commit`         | bool<sup id="bool">[1](#f1)</sup>     | true    | flag: should the formatted files committed?
 `commit-message` | string   | "..."   | commit message for the reformatting step
 `config`         | file/URL | n/a     | config file for the `xmlformat` script
-`extensions`     | string   | `xml`   | file extensions for XML files (without dots or globs)
-`exclude-files`  | string   | n/a     | Excluded XML files from reformatting
+`extensions`     | string/ML<sup id="ML">[2](#f2)</sup>   | `xml`   | file extensions for XML files (without dots or globs)
+`exclude-files`  | string/ML<sup id="ML">[2](#f2)</sup>   | n/a     | Excluded XML files from reformatting
+
+[<a name="f1">[1](#bool)</a>]: boolean value, use `true` (also
+allowed is `1` or `yes`).
+
+[<a name="f2">[2](#ML)</a>]: multi line input with the pipe symbol (`|`)
+or as a string. Each part is separated by one or more spaces.
+
 
 
 ## Outputs
@@ -288,7 +296,7 @@ jobs:
 ```
 
 
-## Pushing reformatted XML files
+## <a name="pushing"></a>Pushing reformatted XML files
 
 The GitHub Action reformats the XML files (excluding
 the exclusion list) and commits them. However, it does not push any files.
