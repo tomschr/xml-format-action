@@ -205,9 +205,11 @@ while true; do
           # commited.
           #
           BASE="/tmp/${CONFIG##*/}"
-          echo "::group::Download config file..."
-          [ -e "$BASE" ] || curl --progress-bar --retry=2 --retry-connrefused --output "$BASE" $CONFIG
-          echo -e "::endgroup::"
+          if [ ! -e "$BASE" ]; then
+            echo "::group::Download config file..."
+            curl --progress-bar --retry-connrefused --output "$BASE" $CONFIG
+            echo "::endgroup::"
+          fi
           # Use the downloaded file path:
           CONFIG="${BASE}"
        elif [ ! -e "$CONFIG" ]; then
