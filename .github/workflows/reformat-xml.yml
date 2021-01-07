@@ -28,25 +28,46 @@ jobs:
            # 0 indicates all history for all branches and tags.
            # This is absolutely needed for this action!
            fetch-depth: 0
+      - run: git fetch
+
+      # Find the PR associated with this push, if there is one.
+      #- uses: jwalton/gh-find-current-pr@v1
+      #  id: findPr
+      #  with:
+      #    github-token: ${{ secrets.GITHUB_TOKEN }}
+      # This will echo "Your PR is 7", or be skipped if there is no current PR.
+      #- run: echo "Your PR is ${PR}"
+      #  if: success() && steps.findPr.outputs.number
+      #  env:
+      #    PR: ${{ steps.findPr.outputs.pr }}
 
       - name: Set Git user and email...
         run: |
-          git config --local user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --local user.email "action@github.com"
           git config --local user.name "XML Reformat Bot"
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "::group::Output GitHub context..."
+          echo "$GITHUB_CONTEXT"
+          echo "::endgroup::"
 
       - name: List action metadata
         run: |
-          echo -e "github.action     : ${{ github.action }}"
-          echo -e "github.actor      : ${{ github.actor }}"
-          echo -e "github.event_name : ${{ github.event_name }}"
-          echo -e "github.job        : ${{ github.job }}"
-          echo -e "github.ref        : ${{ github.ref }}"
-          echo -e "github.base.ref   : ${{ github.event.pull_request.base.ref }}"
-          echo -e" github.repository : ${{ github.repository }}"
-          echo -e "github.run_id     : ${{ github.run_id }}"
-          echo -e "github.sha        : ${{ github.sha }}"
-          echo -e "github.workflow   : ${{ github.workflow }}"
-          echo -e "github.workspace  : ${{ github.workspace }}"
+          echo "github.action     : ${{ github.action }}"
+          echo "github.actor      : ${{ github.actor }}"
+          echo "github.event_name : ${{ github.event_name }}"
+          echo "github.job        : ${{ github.job }}"
+          echo "github.ref        : ${{ github.ref }}"
+          echo "github.base.ref   : ${{ github.event.pull_request.base.ref }}"
+          echo "github.repository : ${{ github.repository }}"
+          echo "github.run_id     : ${{ github.run_id }}"
+          echo "github.sha        : ${{ github.sha }}"
+          echo "github.workflow   : ${{ github.workflow }}"
+          echo "github.workspace  : ${{ github.workspace }}"
+          # echo "github.api.url    : $GITHUB_API_URL"
 
       # - name: Format XML
       #  id: reformat1
@@ -56,6 +77,7 @@ jobs:
         id: dbxml
         uses: ./
         with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           exclude-files: |
             tests/schemas.xml
           config: https://github.com/openSUSE/daps/raw/main/etc/docbook-xmlformat.conf

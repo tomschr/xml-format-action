@@ -1,6 +1,7 @@
 # https://docs.github.com/en/free-pro-team@latest/actions/creating-actions/metadata-syntax-for-github-actions
 name: 'XML reformat'
 description: 'Reformat XML files'
+author: "@tomschr"
 
 inputs:
   config:
@@ -28,6 +29,11 @@ inputs:
     required: false
     default: "[xml-format-action] Auto reformatting XML Files"
 
+  repo-token:
+    description: "The GitHub token"
+    required: true
+    # default: ${{ secrets.GITHUB_TOKEN }}
+
 outputs:
   xmlfound:
     description: "Does the commit contains some XML files?"
@@ -36,6 +42,15 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - id: gh-context
+      name: Saving the GitHub context as JSON
+      shell: bash
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: |
+        FILE="/tmp/github-context.json"
+        echo $GITHUB_CONTEXT > $FILE
+        echo "::set-output name=contextfile::$FILE"
 
     - id: install-packages
       name: Installing packages
@@ -53,11 +68,13 @@ runs:
         EXCLUDES="${{ inputs.exclude-files }}"
         MESSAGE="${{ inputs.commit-message }}"
 
-        ${{ github.action_path }}xml-format-action.sh -v ${CONFIG:+--config-file "$CONFIG"} \
+        ${{ github.action_path }}xml-format-action.sh -vv ${CONFIG:+--config-file "$CONFIG"} \
           ${EXCLUDES:+--excludes="$EXCLUDES"} \
           --extensions="${{ inputs.extensions }}" \
           --need-commit  ${{ inputs.commit }} \
           ${MESSAGE:+--message="$MESSAGE"} \
+          --token=${{ inputs.repo-token }} \
+          --context "${{ steps.gh-context.outputs.contextfile }}" \
           "${{ github.sha }}"
 
 
