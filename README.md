@@ -296,6 +296,20 @@ jobs:
 ```
 
 
+## Use case: Debugging
+
+If something goes wrong, you can introduce the following step into your workflow:
+
+```yaml
+- name: Dump GitHub Context
+  env:
+    GITHUB_CONTEXT: ${{ toJson(github) }}
+  run: echo "${GITHUB_CONTEXT}"
+```
+
+This converts the GitHub context into JSON and outputs it in your action.
+
+
 ## <a name="pushing"></a>Pushing reformatted XML files
 
 The GitHub Action reformats the XML files (excluding
