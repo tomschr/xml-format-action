@@ -27,11 +27,13 @@ the files (see [Pushing reformatted XML files](#pushing).)
 
 ### Action Requirements
 
-Used commands in this GH Action:
+This GitHub Action consists of [composite run steps](https://docs.github.com/en/free-pro-team@latest/actions/creating-actions/creating-a-composite-run-steps-action).
+Used commands are:
 
 * `bash`
 * `curl`
 * `git`
+* `jq`
 * `xmlformat`
 
 Except for `xmlformat`, all commands are already available
@@ -90,13 +92,14 @@ on:
 
 ## Inputs
 
-Name             | Type     | Default | Explanation
------------------|----------|---------|-----------------------------------------
-`commit`         | bool<sup id="bool">[1](#f1)</sup>     | true    | flag: should the formatted files committed?
-`commit-message` | string   | "..."   | commit message for the reformatting step
-`config`         | file/URL | n/a     | config file for the `xmlformat` script
-`extensions`     | string/ML<sup id="ML">[2](#f2)</sup>   | `xml`   | file extensions for XML files (without dots or globs)
-`exclude-files`  | string/ML<sup id="ML">[2](#f2)</sup>   | n/a     | Excluded XML files from reformatting
+Name             | Required? | Type     | Default | Explanation
+-----------------|----------|-----------|---------|-----------------------------------------
+`commit`         | no       | bool<sup id="bool">[1](#f1)</sup>     | true    | flag: should the formatted files committed?
+`commit-message` | no       | string   | "..."   | commit message for the reformatting step
+`config`         | no       | file/URL | n/a     | config file for the `xmlformat` script
+`extensions`     | no       | string/ML<sup id="ML">[2](#f2)</sup>   | `xml`   | file extensions for XML files (without dots or globs)
+`exclude-files`  | no       | string/ML<sup id="ML">[2](#f2)</sup>   | n/a     | Excluded XML files from reformatting
+`repo-token`     | yes      | string   | n/a     | The GitHub token, usually `secrets.GITHUB_TOKEN`
 
 [<a name="f1">[1](#bool)</a>]: boolean value, use `true` (also
 allowed is `1` or `yes`).
