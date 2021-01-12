@@ -327,3 +327,30 @@ the exclusion list) and commits them. However, it does not push any files.
 
 If you want to push reformatted XML files to your GitHub
 repository, use the [actions-go/push](https://github.com/actions-go/push) action.
+Or, if you want to do it manually, use these steps in your workflow file:
+
+```yaml
+- name: Format DocBook XML
+    id: dbxml
+    uses: tomschr/xml-format-action@v1
+    with:
+      repo-token: ${{ secrets.GITHUB_TOKEN }}
+      # use whatever you need
+
+  - name: Push
+    if: ${{ steps.dbxml.outputs.xmlfound }}
+    run: |
+        # Remove any refs/heads/ parts:
+        BRANCH="${GITHUB_REF#refs/heads/}"
+        URL="https://${{github.actor}}:${{secrets.SOURCE_PUSH_TOKEN}}@github.com/${{github.repository}}.git"
+        git push "$URL" "$BRANCH"
+```
+
+As pushing to an existing repo needs read/write permissions, using `secrets.GITHUB_TOKEN`
+is not enough. That's why the push step uses the token named `SOURCE_PUSH_TOKEN`.
+
+To create such token with read/write permissions, refer to the section
+[Creating encrypted secrets for a repository](https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) of the GitHub documentation.
+
+The push step only pushes files if the previous step (`Format DocBook XML` with `id=dbxml`) contained
+files which are detected as XML and where changed.
