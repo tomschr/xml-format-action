@@ -3,6 +3,20 @@
 # Purpose:
 #  Investigate commit and reformat only specified XML files.
 #
+# Design
+#   This GitHub Action can be used for push event. Any
+#   pull-request events are not tested ATM.
+#   As the GitHub context doesn't provide any information about
+#   the pull request, its number, and their commits, we need
+#   to find it through a cascade of API calls:
+#
+# 1. Find URL from github.event.repository.pulls_url
+# 2. /commits/:sha/pulls  => gets the PR number of commit :sha
+# 3. /repos/:repo/pulls/:pr/commits => gets all commits of PR :pr
+# 4. Use first and last commit and create a range "first..last".
+#    If there is only one commit, use first.
+# 5. Use "git diff-tree" and find all files within this range
+#
 # Author: Tom Schraitle
 # Date: December 2020
 
@@ -40,6 +54,12 @@ ALLXMLFILES=()
 # Array of all XML files to investigate (basically ALLXMLFILES - EXCLUDE):
 XMLFILES=()
 
+# The token to access the GitHub API
+GH_TOKEN=""
+
+# The JSON file containing the GitHub context:
+GH_CONTEXT=""
+
 
 function usage {
     cat <<EOF_helptext
@@ -68,6 +88,10 @@ Options:
                      separated by space.
                      Each extension must be specified without dots or
                      globs (default: "${EXTENSIONS[@]}").
+  --token=TOKEN      The token that is used to access the GitHub API
+  --context=CONTEXT_FILE
+                     The GitHub context as JSON file
+
 
 Arguments:
   COMMIT            The commit to search for XML files. Can be a
@@ -91,55 +115,131 @@ EOF_helptext
 function getxmlformat {
 # Get the executable script for xmlformat.
 # Depending on the distribution, it's name can be different
-# (with or without extension)
+# (with or without extensions .rb or .pl)
 #
-# No Parameters
-# Returns the absolute path; at the same time, it assign the
-# found path to XMLFORMAT variable.
+# Parameters
+#    n/a
+# Returns
+#    n/a; function assigns the found path to XMLFORMAT variable.
 
   local commands
 
-  # readarray -t commands <<< $(type -a -p xmlformat xmlformat.rb xmlformat.pl)
-  commands=( $(whereis -b xmlformat | cut -d ' ' -f2) )
+  readarray -t commands <<< $(type -a -p xmlformat xmlformat.rb xmlformat.pl)
   XMLFORMAT=${commands[0]}
+}
+
+
+function get_pr_number {
+# Get the GitHub number for the last commit
+#
+# Parameters:
+#    $1:  The SHA commit to investigate
+# Returns:
+#    Pull-request number
+#
+# See https://docs.github.com/rest/reference/repos#list-pull-requests-associated-with-a-commit
+# curl -X GET -u $GITHUB_TOKEN:x-oauth-basic https://api.github.com/search/issues?q=
+
+  local last=$1
+  local commits_url
+  local PR_CONTEXT="/tmp/pr-context.json"
+  # last=$(jq --raw-output ".sha" $GH_CONTEXT)
+  commits_url=$(jq --raw-output ".event.repository.commits_url" $GH_CONTEXT)
+  # Replace {/sha} with $last/pulls
+  commits_url=${commits_url//\{\/sha\}//$last/pulls}
+
+  # Use APIv3 call to /repos/{owner}/{repo}/commits/{commit_sha}/pulls
+  # https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#list-pull-requests-associated-with-a-commit
+
+  curl --silent -o $PR_CONTEXT \
+   -H "Accept: application/vnd.github.groot-preview+json" \
+   -u $GH_TOKEN:x-oauth-basic $commits_url
+
+  jq --raw-output ".[].number" $PR_CONTEXT
+}
+
+
+function get_pr_url {
+# Return github.event.repository.pulls_url from GitHub context
+#
+# Parameter
+#   n/a
+# Returns
+#   URL string, with placeholder {/number}
+#
+# github.event.repository.pulls_url
+  URL=$(jq --raw-output ".event.repository.pulls_url" $GH_CONTEXT)
+  # URL=${URL//\{\/number\}/\/11}
+  echo $URL
+}
+
+function get_commits_from_pr {
+# Get a list of all commits from a specific pull request
+#
+# Parameters
+#    $1  the URL to which to connect
+#    $2  the pull reqest number
+#
+# Returns
+#    a string, consists of a two SHA values separated by space:
+#    "FIRST_SHA LAST_SHA"
+
+  local URL=$1
+  local PR=$2
+  local PR_CONTEXT="/tmp/pr${PR}-commits.json"
+  local COMMITS
+  URL=${URL//\{\/number\}/\/$PR}/commits
+
+  # /repos/:repo/pulls/:pr/commits
+  # curl -o pr11-commits.json -X GET -u $GH_TOKEN:x-oauth-basic \
+  # https://api.github.com/repos/tomschr/xml-format-action/pulls/11/commits
+  curl --silent -o $PR_CONTEXT \
+   -H "Accept: application/vnd.github.groot-preview+json" \
+   -u $GH_TOKEN:x-oauth-basic -X GET $URL
+
+  if [[ ! -e $PR_CONTEXT ]]; then
+    echo "::error::Did not get output from curl."
+    exit 100
+  fi
+
+  # Get first and last commit only:
+  readarray -t COMMITS <<< $(jq --raw-output ".[].sha" $PR_CONTEXT | sed -e 1b -e '$!d' )
+  if [ -z "${COMMITS[1]}" ]; then
+    echo "${COMMITS[0]}"
+  else
+    echo "${COMMITS[0]}..${COMMITS[1]}"
+  fi
 }
 
 function getgitfilelist {
 # Get a file list of added, copied, or renamed files of a specific commit
 #
 # Parameters:
-#    $1: the commit to investigate
+#    $1: the commit or commit range to investigate. A commit range
+#        is separated by space
 #
 # Returns:
 #    a sequence of files separated by space
 
-    local SHA="${1}"
+    local RANGE="${1}"
+    local FILES
+
     # Only look for added, copied, modified, and renamed files:
-    FILES=$(git diff-tree --no-commit-id --name-only -r -m --diff-filter=ACMR $SHA)
+    readarray -t FILES <<< $(git diff-tree --no-commit-id --name-only -r -m --diff-filter=ACMR "$RANGE")
     # Replace newlines with spaces:
-    FILES="${FILES//$'\n'/ }"
+    # FILES="${FILES//$'\n'/ }"
     # Remove leading whitespace:
-    FILES="${FILES##+([[:space:]])}"
-    echo $FILES
+    # FILES="${FILES##+([[:space:]])}"
+    echo ${FILES[@]}
 }
 
 getxmlformat
 
 
-if [ $VERBOSITY -gt 0 ]; then
-  echo "::group::xmlformat found..."
-  echo "$XMLFORMAT"
-  echo "::endgroup::"
-  echo "::group::Method 2 for finding xmlformat..."
-  readarray -t commands <<< $(type -a -p xmlformat xmlformat.rb xmlformat.pl)
-  echo ${commands[0]}
-  echo "::endgroup::"
-fi
-
 ## Parsing command line arguments:
 export POSIXLY_CORRECT=1
 ARGS=$(getopt -o "hve:c:x:m:" \
-       -l "help,verbose,excludes:,config-file:,extensions:,message:,need-commit:" -n "$ME" -- "$@")
+       -l "help,verbose,excludes:,config-file:,extensions:,message:,need-commit:,token:,context:" -n "$ME" -- "$@")
 eval set -- "$ARGS"
 unset POSIXLY_CORRECT
 
@@ -178,6 +278,7 @@ while true; do
        MESSAGE="$2"
        shift 2
        ;;
+
     --need-commit)
       if [[ $2 =~ ^(0|false|no) ]]; then
           COMMIT="0"
@@ -189,10 +290,12 @@ while true; do
        COMMIT=0
        shift
        ;;
+
     --commit)
        COMMIT=1
        shift
        ;;
+
     -c|--config-file)
        CONFIG="$2"
        # 
@@ -205,16 +308,28 @@ while true; do
           # commited.
           #
           BASE="/tmp/${CONFIG##*/}"
-          echo "::group::Download config file..."
-          [ -e "$BASE" ] || curl --progress-bar --retry=2 --retry-connrefused --output "$BASE" $CONFIG
-          echo -e "::endgroup::"
+          if [ ! -e "$BASE" ]; then
+            echo "::group::Download config file..."
+            curl --progress-bar --retry-connrefused --output "$BASE" $CONFIG
+            echo "::endgroup::"
+          fi
           # Use the downloaded file path:
           CONFIG="${BASE}"
        elif [ ! -e "$CONFIG" ]; then
-         echo "::error file=$CONFIG::File not found"
+         echo "::error file=$CONFIG::Configuration file not found"
          exit 20
        fi
        
+       shift 2
+       ;;
+
+    --token)
+       GH_TOKEN="$2"
+       shift 2
+       ;;
+
+    --context)
+       GH_CONTEXT="$2"
        shift 2
        ;;
 
@@ -249,6 +364,7 @@ if [ $VERBOSITY -gt 0 ]; then
 echo "::group::GitHub variables..."
 echo "GITHUB_WORKFLOW=$GITHUB_WORKFLOW"
 echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
+echo "GITHUB_EVENT_PATH : $GITHUB_EVENT_PATH"
 echo "GITHUB_ACTION=$GITHUB_ACTION"
 echo "GITHUB_ACTOR=$GITHUB_ACTOR"
 echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
@@ -257,20 +373,57 @@ echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
 echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
 echo "::endgroup::"
 
+if [ $VERBOSITY -gt 1 ]; then
+echo "::group::Content of GITHUB_EVENT_PATH..."
+cat $GITHUB_EVENT_PATH
+echo -e "\n::endgroup::"
+fi
+
+echo "::group::xmlformat found..."
+echo "$XMLFORMAT"
+echo "::endgroup::"
+
+# get_first_last_commits
+echo "::group::Get pull request URL and PR# for commit ${COMMITSHA::7}"
+URL=$(get_pr_url)
+PR=$(get_pr_number $COMMITSHA)
+echo "URL=$URL"
+echo "PR=$PR"
+echo "::endgroup::"
+
 echo "::group::Used CLI options..."
 echo "--config-file='$CONFIG'"
 echo "--message='$MESSAGE'"
 echo "--extensions='$EXTENSIONS'"
 echo "--excludes=${EXCLUDES[@]}"
 echo "--verbosity=$VERBOSITY"
-echo "--commit/--no-commit => $COMMIT"
+echo "--need-commit=$COMMIT"
+echo "--token=${GH_TOKEN:+'***'}"
+echo "--context=${GH_CONTEXT}"
 echo "commitsha=$COMMITSHA"
+echo "::endgroup::"
+fi
+
+echo "::group::Trying to find the commits in PR#$PR..."
+RANGE=$(get_commits_from_pr "$URL" "$PR")
+# Sanitiy check: RANGE shouldn't be empty
+if [ -z "$RANGE" ]; then
+   echo "::error::Couldn't find any range in this PR."
+   exit 60
+fi
+echo "$RANGE"
+echo "::endgroup::"
+
+if [ $VERBOSITY -gt 1 ]; then
+echo "::group::GitHub context..."
+ls -l "${GH_CONTEXT}"
+cat ${GH_CONTEXT}
 echo "::endgroup::"
 fi
 
 
 # Create an array with all of our XML files of the given commit:
-ALLXMLFILES=( $(getgitfilelist $COMMITSHA) )
+ALLXMLFILES=( $(getgitfilelist "$RANGE") )
 
 
 # "Subtract" ALLXMLFILES from EXCLUDES to get real files
@@ -314,11 +467,12 @@ else
     echo "::endgroup::"
     echo "::set-output name=xmlfound::true"
     if [ $COMMIT -eq 1 ]; then
+      COMMIT_AUTHOR=$(jq ".event.commits[0].author.name" $GH_CONTEXT)
       echo "::group::Committing changed XML files..."
       cat > $FILE_COMMIT << EOF
 ${MESSAGE}
 
-Co-authored-by: <${GITHUB_ACTOR}@users.noreply.github.com>
+Co-authored-by: $COMMIT_AUTHOR <${GITHUB_ACTOR}@users.noreply.github.com>
 EOF
       git commit --file="$FILE_COMMIT" "${XMLFILES[@]}" || true
       echo "::endgroup::"
