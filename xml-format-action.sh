@@ -406,10 +406,13 @@ fi
 
 echo "::group::Trying to find the commits in PR#$PR..."
 RANGE=$(get_commits_from_pr "$URL" "$PR")
-# Sanitiy check: RANGE shouldn't be empty
+# We check if $RANGE is empty; if yes, we assign it $COMMITSHA
+# if not, we use $RANGE
+# Sanitiy check: if RANGE is really empty (which shouldn't be)
+# then there is something wrong.
 if [ -z "$RANGE" ]; then
-   echo "::error::Couldn't find any range in this PR."
-   exit 60
+   echo "::warning::No range found. Using commit ${COMMITSHA::7} instead."
+   RANGE="${COMMITSHA}"
 fi
 echo "$RANGE"
 echo "::endgroup::"
