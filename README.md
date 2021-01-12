@@ -99,7 +99,7 @@ Name             | Required? | Type     | Default | Explanation
 `config`         | no       | file/URL | n/a     | config file for the `xmlformat` script
 `extensions`     | no       | string/ML<sup id="ML">[2](#f2)</sup>   | `xml`   | file extensions for XML files (without dots or globs)
 `exclude-files`  | no       | string/ML<sup id="ML">[2](#f2)</sup>   | n/a     | Excluded XML files from reformatting
-`repo-token`     | yes      | string   | n/a     | The GitHub token, usually `secrets.GITHUB_TOKEN`
+`repo-token`     | yes      | string   | n/a     | The GitHub token, usually `secrets.GITHUB_TOKEN`. Needed to access the repo.
 
 [<a name="f1">[1](#bool)</a>]: boolean value, use `true` (also
 allowed is `1` or `yes`).
@@ -142,6 +142,8 @@ jobs:
 
       - name: Format XML
         uses: tomschr/xml-format-action@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Use case: Using a configuration file
@@ -172,6 +174,7 @@ jobs:
       - name: Format XML
         uses: tomschr/xml-format-action@v1
         with:
+           repo-token: ${{ secrets.GITHUB_TOKEN }}
            config: doc/docbook-xmlformat.conf
 ```
 
@@ -182,6 +185,7 @@ For example:
 - name: Format XML from remote URL
     uses: tomschr/xml-format-action@v1
     with:
+      repo-token: ${{ secrets.GITHUB_TOKEN }}
       config: https://github.com/openSUSE/daps/raw/main/etc/docbook-xmlformat.conf
 ```
 
@@ -215,6 +219,7 @@ jobs:
       - name: Format XML
         uses: tomschr/xml-format-action@v1
         with:
+           repo-token: ${{ secrets.GITHUB_TOKEN }}
            exclude-files: "xml/schemas.xml"
 ```
 
@@ -255,6 +260,7 @@ jobs:
       - name: Format XML
         uses: tomschr/xml-format-action@v1
         with:
+           repo-token: ${{ secrets.GITHUB_TOKEN }}
            extensions: "mml"
 ```
 
@@ -295,6 +301,7 @@ jobs:
       - name: Format XML
         uses: tomschr/xml-format-action@v1
         with:
+           repo-token: ${{ secrets.GITHUB_TOKEN }}
            commit-message: "Reformatted by xml-format-action"
 ```
 
