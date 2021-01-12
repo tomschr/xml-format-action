@@ -347,7 +347,8 @@ Or, if you want to do it manually, use these steps in your workflow file:
 ```
 
 As pushing to an existing repo needs read/write permissions, using `secrets.GITHUB_TOKEN`
-is not enough. That's why the push step uses the token named `SOURCE_PUSH_TOKEN`.
+[is not enough](https://docs.github.com/en/free-pro-team@latest/actions/reference/authentication-in-a-workflow#permissions-for-the-github_token) as it contains only read access.
+That's why the push step uses the token named `SOURCE_PUSH_TOKEN`.
 
 To create such token with read/write permissions, refer to the section
 [Creating encrypted secrets for a repository](https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) of the GitHub documentation.
