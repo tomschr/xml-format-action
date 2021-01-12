@@ -3,7 +3,15 @@ on:
   push:
     paths:
       - 'tests/*.xml'
-
+  #  tags-ignore:
+  #    - "*"
+  #  branches:
+  #    # Reformatting should only occur on pull requests
+  #    - "!main"
+  #    - "!master"
+  # pull_request:
+  #  paths:
+  #    - 'tests/*.xml'
 
 jobs:
   reformat-xml:
