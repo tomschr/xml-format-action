@@ -1,6 +1,7 @@
 # xml-format-action v1
 
-GitHub Action to formats all XML files of the current commit with the `xmlformat` tool.
+GitHub Action to formats all XML files found in a pull request with the
+[`xmlformat`](http://www.kitebird.com/software/xmlformat/) tool.
 
 
 ## Design
