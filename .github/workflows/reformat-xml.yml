@@ -1,4 +1,6 @@
 ---
+name: reformat-xml
+
 on:
   push:
     paths:
