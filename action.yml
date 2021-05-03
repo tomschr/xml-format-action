@@ -68,7 +68,7 @@ runs:
         EXCLUDES="${{ inputs.exclude-files }}"
         MESSAGE="${{ inputs.commit-message }}"
 
-        ${{ github.action_path }}xml-format-action.sh -vv ${CONFIG:+--config-file "$CONFIG"} \
+        ${{ github.action_path }}/xml-format-action.sh -vv ${CONFIG:+--config-file "$CONFIG"} \
           ${EXCLUDES:+--excludes="$EXCLUDES"} \
           --extensions="${{ inputs.extensions }}" \
           --need-commit  ${{ inputs.commit }} \
