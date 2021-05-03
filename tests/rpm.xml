@@ -16,7 +16,8 @@
   </dm:docmanager>
  </info>
  <para> RPM (RPM Package Manager) is used for managing software packages. Its main commands are <command>rpm</command> and <command>rpmbuild</command>. The powerful RPM database can be queried by the users, system administrators and package builders for detailed information about the installed software.</para>
- <para> <command>rpm</command> has five modes: installing, uninstalling (or updating) software packages, rebuilding the RPM database, querying RPM bases or
+ <para>
+  <command>rpm</command> has five modes: installing, uninstalling (or updating) software packages, rebuilding the RPM database, querying RPM bases or
   individual RPM archives, integrity checking of packages and signing packages.  <command>rpmbuild</command> can be used to build installable packages from pristine sources.  </para>
  <para>
   Installable RPM archives are packed in a special binary format. These
