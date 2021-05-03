@@ -60,6 +60,10 @@ GH_TOKEN=""
 # The JSON file containing the GitHub context:
 GH_CONTEXT=""
 
+# The default Git user and email identity
+DEFAULT_USER_NAME="action"
+DEFAULT_USER_EMAIL="action@github.com"
+
 
 function usage {
     cat <<EOF_helptext
@@ -110,6 +114,34 @@ Examples:
 
 Version $VERSION, written by $AUTHOR
 EOF_helptext
+}
+
+function config_user {
+# Set the Git identity. If no Git identity is configured, use defaults
+#
+# HINT:
+# This is needed, if the user forgets to configure a specific
+# Git identity.
+#
+# Optional parameters
+#   1: user, default is "actions-user"
+#   2: email, default is "actions-user@users.noreply.github.com"
+# Returns
+#   n/a
+
+    local user="${1:-$DEFAULT_USER_NAME}"
+    local mail="${2:-$DEFAULT_USER_EMAIL}"
+    local tmpuser
+    local tmpmail
+
+    tmpuser=$(git config user.name)
+    if [ "" == "${tmpuser}" ]; then
+        git config --global user.name "$user"
+    fi
+    tmpmail=$(git config user.email)
+    if [ "" == "${tmpmail}" ]; then
+        git config --global user.email "$mail"
+    fi
 }
 
 function getxmlformat {
@@ -358,6 +390,15 @@ fi
 # Make shell arrays unique as in https://stackoverflow.com/a/13648438
 EXTENSIONS=($(echo "${EXTENSIONS[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
 EXCLUDES=($(echo "${EXCLUDES[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+
+config_user
+if [ $VERBOSITY -gt 0 ]; then
+echo "::group::Git identity..."
+echo "user.name=$(git config user.name)"
+echo "user.email=$(git config user.email)"
+echo "::endgroup::"
+fi
+
 
 if [ $VERBOSITY -gt 0 ]; then
 # https://docs.github.com/en/free-pro-team@latest/actions/reference/environment-variables#default-environment-variables
