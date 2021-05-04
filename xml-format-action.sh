@@ -507,8 +507,14 @@ if [ ${#XMLFILES[@]} -eq 0 ]; then
     echo "::set-output name=xmlfound::false"
 else
     echo "::group::Formatting XML files..."
-    $XMLFORMAT ${CONFIG:+--config-file $CONFIG} --backup .bak --in-place "${XMLFILES[@]}"
+    echo $XMLFORMAT ${CONFIG:+--config-file $CONFIG} --in-place "${XMLFILES[@]}"
+    $XMLFORMAT ${CONFIG:+--config-file $CONFIG} --in-place "${XMLFILES[@]}"
     echo "::endgroup::"
+
+    echo "::group::git status"
+    git status
+    echo "::endgroup::"
+
     echo "::set-output name=xmlfound::true"
     if [ $COMMIT -eq 1 ]; then
       COMMIT_AUTHOR=$(jq ".event.commits[0].author.name" $GH_CONTEXT)

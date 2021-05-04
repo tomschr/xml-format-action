@@ -13,11 +13,15 @@ This GitHub Action takes care of:
   available as `xmlformat`, `xmlformat.rb` or `xmlformat.pl`.
   It will find the script in the mentioned order.
 * Investigates what files are integrated in the commit.
-* Optionally, lets you set a configuration file. If it's a remote address,
+
+Optionally, it lets you set additional parameters:
+
+* Set a configuration file. If it's a remote address,
   it will download the config file automatically.
-* Optionally, define a list of excluded files.
-* Optionally, lets you define a list of allowed file extensions.
-* Optionally, lets you commit the changed XML files.
+* Define a list of excluded files.
+* Define a list of allowed file extensions.
+* Define a default Git identity.
+* Commit the changed XML files.
 
 The GitHub Action **does not** push the changed XML files automatically. You have to do it after you have formatted
 the files (see [Pushing reformatted XML files](#pushing).)
@@ -91,16 +95,18 @@ on:
       - "b/*.xml"
 ```
 
+
 ## Inputs
 
-Name             | Required? | Type     | Default | Explanation
------------------|----------|-----------|---------|-----------------------------------------
-`commit`         | no       | bool<sup id="bool">[1](#f1)</sup>     | true    | flag: should the formatted files committed?
-`commit-message` | no       | string   | "..."   | commit message for the reformatting step
-`config`         | no       | file/URL | n/a     | config file for the `xmlformat` script
-`extensions`     | no       | string/ML<sup id="ML">[2](#f2)</sup>   | `xml`   | file extensions for XML files (without dots or globs)
-`exclude-files`  | no       | string/ML<sup id="ML">[2](#f2)</sup>   | n/a     | Excluded XML files from reformatting
-`repo-token`     | yes      | string   | n/a     | The GitHub token, usually `secrets.GITHUB_TOKEN`. Needed to access the repo.
+Name                | Required? | Type     | Default | Explanation
+--------------------|----------|-----------|---------|-----------------------------------------
+`commit`            | no       | bool<sup id="bool">[1](#f1)</sup>     | true    | flag: should the formatted files committed?
+`commit-message`    | no       | string   | "..."   | commit message for the reformatting step
+`config`            | no       | file/URL | n/a     | config file for the `xmlformat` script
+`extensions`        | no       | string/ML<sup id="ML">[2](#f2)</sup>   | `xml`   | file extensions for XML files (without dots or globs)
+`exclude-files`     | no       | string/ML<sup id="ML">[2](#f2)</sup>   | n/a     | Excluded XML files from reformatting
+`repo-token`        | yes      | string   | n/a     | The GitHub token, usually `secrets.GITHUB_TOKEN`. Needed to access the repo.
+`xmlformat-variant` | no       | string   | perl    | The package variant to install (perl or ruby)
 
 [<a name="f1">[1](#bool)</a>]: boolean value, use `true` (also
 allowed is `1` or `yes`).

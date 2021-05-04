@@ -33,6 +33,11 @@ inputs:
     description: "The GitHub token"
     required: true
     # default: ${{ secrets.GITHUB_TOKEN }}
+  
+  xmlformat-variant:
+    description: "Which xmlformat package should be installed? (perl|ruby)"
+    required: false
+    default: "perl"
 
 outputs:
   xmlfound:
@@ -55,10 +60,17 @@ runs:
     - id: install-packages
       name: Installing packages
       shell: bash
+      env:
+         PACKAGE: "${{ inputs.xmlformat-variant }}"
       run: |
-        PACKAGES="xmlformat-ruby"
+        if [[ ! ( "$PACKAGE" = "perl" || "$PACKAGE" = "ruby") ]]; then
+          echo "::error file=action.yml::Input xmlformat-variant contains an invalid value. Only 'perl' or 'ruby' is allowed."
+          exit 10
+        fi
+
+        PACKAGES="xmlformat-$PACKAGE"
         echo "::group::Installing package(s) $PACKAGES..."
-        sudo apt-get install $PACKAGES
+        sudo apt-get install -y $PACKAGES
         echo "::endgroup::"
 
     - id: reformat

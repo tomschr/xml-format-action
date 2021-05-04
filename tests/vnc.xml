@@ -14,13 +14,9 @@ role='description'><phrase>Add new session</phrase></textobject><imageobject rol
    <dm:translation>yes</dm:translation>
   </dm:docmanager>
   <abstract>
-   <para> Virtual Network Computing (VNC) enables you to access a remote computer via
-    a graphical desktop, and run remote graphical applications. VNC is platform-independent and accesses the remote machine from any operating system. This chapter describes how to connect to a VNC server with the desktop clients vncviewer and Remmina, and how to operate a VNC server.  </para>
+   <para> Virtual Network Computing (VNC) enables you to access a remote computer via a graphical desktop, and run remote graphical applications. VNC is platform-independent and accesses the remote machine from any operating system. This chapter describes how to connect to a VNC server with the desktop clients vncviewer and Remmina, and how to operate a VNC server.  </para>
    <para>
-    &productname; supports two different kinds of VNC sessions: One-time
-    sessions that <quote>live</quote> as long as the VNC connection from the
-    client is kept up, and persistent sessions that <quote>live</quote> until
-    they are explicitly terminated.
+    &productname; supports two different kinds of VNC sessions: One-time sessions that <quote>live</quote> as long as the VNC connection from the client is kept up, and persistent sessions that <quote>live</quote> until they are explicitly terminated.
    </para>
    <para>
     A VNC server can offer both kinds of sessions simultaneously on different
