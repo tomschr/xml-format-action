@@ -26,6 +26,7 @@
   software package or stored in the RPM database for documentation purposes.
   RPM archives normally have the extension <filename>.rpm</filename>.
  </para>
+ <formalpara><title>Hiho</title><para>Hello</para></formalpara>
  <tip>
   <title>Software Development Packages</title>
   <para>
