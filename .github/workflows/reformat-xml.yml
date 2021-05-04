@@ -1,5 +1,5 @@
 ---
-name: reformat-xml
+name: Reformat XML
 
 on:
   push:
