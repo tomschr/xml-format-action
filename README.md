@@ -1,14 +1,14 @@
 # xml-format-action v1
 
 GitHub Action to formats all XML files found in a pull request with the
-[`xmlformat`](http://www.kitebird.com/software/xmlformat/) tool.
+[`xmlformat`](https://github.com/someth2say/xmlformat) tool.
 
 
 ## Design
 
 This GitHub Action takes care of:
 
-* Installs the `xmlformat-ruby` package.
+* Installs the `xmlformat` package.
 * Finds the `xmlformat` script. For some distributions, it is
   available as `xmlformat`, `xmlformat.rb` or `xmlformat.pl`.
   It will find the script in the mentioned order.
@@ -77,7 +77,8 @@ use the option `fetch-depth` and set it to zero:
     fetch-depth: 0
 ```
 
-**Important: If you forget that, the `xml-format-action` won't find any files at all!**
+**Important: If you forget the `fetch-depth` option, the `xml-format-action`
+won't find any files at all!**
 
 
 Another recommendation (although it's not a requirement) is to use the
@@ -102,19 +103,22 @@ Name                | Required? | Type     | Default | Explanation
 --------------------|----------|-----------|---------|-----------------------------------------
 `commit`            | no       | bool<sup id="bool">[1](#f1)</sup>     | true    | flag: should the formatted files committed?
 `commit-message`    | no       | string   | "..."   | commit message for the reformatting step
-`config`            | no       | file/URL | n/a     | config file for the `xmlformat` script
-`extensions`        | no       | string/ML<sup id="ML">[2](#f2)</sup>   | `xml`   | file extensions for XML files (without dots or globs)
-`exclude-files`     | no       | string/ML<sup id="ML">[2](#f2)</sup>   | n/a     | Excluded XML files from reformatting
+`config`            | no       | file/URL<sup id="config">[2](#f2)</sup> | n/a     | config file for the `xmlformat` script
+`extensions`        | no       | string/ML<sup id="ML">[3](#f3)</sup>   | `xml`   | file extensions for XML files (without dots or globs)
+`exclude-files`     | no       | string/ML<sup>[3](#f3)</sup>   | n/a     | Excluded XML files from reformatting
 `repo-token`        | yes      | string   | n/a     | The GitHub token, usually `secrets.GITHUB_TOKEN`. Needed to access the repo.
 `xmlformat-variant` | no       | string   | perl    | The package variant to install (perl or ruby)
 
 [<a name="f1">[1](#bool)</a>]: boolean value, use `true` (also
 allowed is `1` or `yes`).
 
-[<a name="f2">[2](#ML)</a>]: multi line input with the pipe symbol (`|`)
+[<a name="f2">[2](#config)</a>]: if you pass a GitHub URL, it's recommended to
+use `https://raw.githubusercontent.com/OWNER/PROJECT/<PATH>` as URL.
+However, it also works for GitHub URLs like
+`https://github.com/OWNER/PROJECT/raw/<PATH>`.
+
+[<a name="f3">[3](#ML)</a>]: multi line input with the pipe symbol (`|`)
 or as a string. Each part is separated by one or more spaces.
-
-
 
 ## Outputs
 
@@ -190,10 +194,10 @@ For example:
 
 ```yaml
 - name: Format XML from remote URL
-    uses: tomschr/xml-format-action@v1
-    with:
-      repo-token: ${{ secrets.GITHUB_TOKEN }}
-      config: https://github.com/openSUSE/daps/raw/main/etc/docbook-xmlformat.conf
+  uses: tomschr/xml-format-action@v1
+  with:
+    repo-token: ${{ secrets.GITHUB_TOKEN }}
+    config: https://raw.githubusercontent.com/openSUSE/daps/main/etc/docbook-xmlformat.conf
 ```
 
 In this case, the remote config file is downloaded and saved
@@ -275,7 +279,7 @@ You can also use the pipe (`|`) symbol to add more than
 one file extension:
 
 ```yaml
-- name: Format XML
+- name: Format XML, SVG, and MathML
   uses: tomschr/xml-format-action@v1
   with:
     extension: |
