@@ -108,6 +108,7 @@ Name                | Required? | Type     | Default | Explanation
 `exclude-files`     | no       | string/ML<sup>[3](#f3)</sup>   | n/a     | Excluded XML files from reformatting
 `repo-token`        | yes      | string   | n/a     | The GitHub token, usually `secrets.GITHUB_TOKEN`. Needed to access the repo.
 `xmlformat-variant` | no       | string   | perl    | The package variant to install (perl or ruby)
+`xmlformat-use-tag` | no       | string   | n/a     | Use the given tag from xmlformat upstream GH repository
 
 [<a name="f1">[1](#bool)</a>]: boolean value, use `true` (also
 allowed is `1` or `yes`).
