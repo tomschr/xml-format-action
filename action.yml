@@ -38,6 +38,11 @@ inputs:
     description: "Which xmlformat package should be installed? (perl|ruby)"
     required: false
     default: "perl"
+  
+  xmlformat-use-tag:
+    description: "Use the given tag from upstream GH repository"
+    required: false
+    # default: "0.4"
 
 outputs:
   xmlfound:
@@ -57,20 +62,73 @@ runs:
         echo $GITHUB_CONTEXT > $FILE
         echo "::set-output name=contextfile::$FILE"
 
-    - id: install-packages
-      name: Installing packages
+    # - id: install-packages
+    #   name: Installing packages
+    #   shell: bash
+    #   env:
+    #      PACKAGE: "${{ inputs.xmlformat-variant }}"
+    #   run: |
+    #     if [[ ! ( "$PACKAGE" = "perl" || "$PACKAGE" = "ruby") ]]; then
+    #       echo "::error file=action.yml::Input xmlformat-variant contains an invalid value. Only 'perl' or 'ruby' is allowed."
+    #       exit 10
+    #     fi
+
+    #     PACKAGES="xmlformat-$PACKAGE"
+    #     echo "::group::Installing package(s) $PACKAGES..."
+    #     sudo apt-get install -y $PACKAGES
+    #     echo "::endgroup::"
+
+    - id: install-xmlformat-from-github
+      name: Install xmlformat from GitHub
       shell: bash
       env:
-         PACKAGE: "${{ inputs.xmlformat-variant }}"
+        UPSTREAM_GIT_REPO: "https://github.com/someth2say/xmlformat.git"
+        TAG: ${{ inputs.xmlformat-use-tag }}
       run: |
-        if [[ ! ( "$PACKAGE" = "perl" || "$PACKAGE" = "ruby") ]]; then
-          echo "::error file=action.yml::Input xmlformat-variant contains an invalid value. Only 'perl' or 'ruby' is allowed."
-          exit 10
-        fi
+        echo "::group::Clone from upstream repository${TAG:+ using tag $TAG}..."
+        git config advice.detachedHead false
+        git clone -v ${TAG:+--branch $TAG} $UPSTREAM_GIT_REPO
+        echo "::endgroup::"
 
-        PACKAGES="xmlformat-$PACKAGE"
-        echo "::group::Installing package(s) $PACKAGES..."
-        sudo apt-get install -y $PACKAGES
+    - id: create-symbolic-link
+      name: Create symbolic link to xmlformat
+      shell: bash
+      run: |
+        echo "::group::Create symbolic link to xmlformat..."
+        if [ -e xmlformat/bin ]; then 
+           cd xmlformat/bin
+           case "${{ inputs.xmlformat-variant }}" in
+              Perl|perl|pl)
+                EXT=pl
+                ;;
+              Ruby|ruby|rb)
+                EXT=rb
+                ;;
+              *)
+                echo "::error file=action.yml::xmlformat-variant can only contain perl or ruby, got ${{ inputs.xmlformat-variant }}."
+                ;;
+           esac
+           # Default to the Perl variant
+           ln -sv xmlformat.${EXT:-pl} xmlformat
+           cd - >/dev/null
+        fi
+        echo "::endgroup::"
+
+    - id: path
+      name: Export PATH content
+      shell: bash
+      run: |
+        PATH="$PWD/xmlformat/bin:$PATH"
+        echo "::set-output name=PATH::$PATH"
+
+    - id: version
+      name: Version of xmlformat
+      shell: bash
+      run: |
+        echo "::group::Find appropriate xmlformat variant..."
+        export PATH="${{ steps.path.outputs.PATH }}"
+        type xmlformat xmlformat.pl xmlformat.rb
+        xmlformat --version
         echo "::endgroup::"
 
     - id: reformat
@@ -79,6 +137,7 @@ runs:
         CONFIG="${{ inputs.config }}"
         EXCLUDES="${{ inputs.exclude-files }}"
         MESSAGE="${{ inputs.commit-message }}"
+        export PATH="${{ steps.path.outputs.PATH }}"
 
         ${{ github.action_path }}/xml-format-action.sh -vv ${CONFIG:+--config-file "$CONFIG"} \
           ${EXCLUDES:+--excludes="$EXCLUDES"} \

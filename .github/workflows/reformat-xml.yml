@@ -91,6 +91,7 @@ jobs:
           exclude-files: |
             tests/schemas.xml
           config: https://github.com/openSUSE/daps/raw/main/etc/docbook-xmlformat.conf
+          xmlformat-use-tag: 1.9
       
       - name: Check steps outputs
         run: |

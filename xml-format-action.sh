@@ -65,6 +65,10 @@ DEFAULT_USER_NAME="action"
 DEFAULT_USER_EMAIL="action@github.com"
 
 
+function echoerr {
+  echo "::error file=xml-format-action.sh::$@"
+}
+
 function usage {
     cat <<EOF_helptext
 Usage: $ME [OPTIONS] <COMMIT>
@@ -158,6 +162,10 @@ function getxmlformat {
 
   readarray -t commands <<< $(type -a -p xmlformat xmlformat.rb xmlformat.pl)
   XMLFORMAT=${commands[0]}
+  if [ ${#XMLFORMAT} -eq 0 ]; then
+    echoerr "Could not find neither of xmlformat, xmlformat.pl, nor xmlformat.rb."
+    exit 10
+  fi
 }
 
 
@@ -265,6 +273,7 @@ function getgitfilelist {
     echo ${FILES[@]}
 }
 
+
 getxmlformat
 
 
@@ -342,15 +351,27 @@ while true; do
           BASE="/tmp/${CONFIG##*/}"
           if [ ! -e "$BASE" ]; then
             echo "::group::Download config file..."
-            curl --progress-bar --retry-connrefused --output "$BASE" $CONFIG
+            # --location follows redirects
+            curl --progress-bar --location --retry-connrefused --output "$BASE" $CONFIG
+            echo "Saved config to $BASE"
+            ls -l $BASE
             echo "::endgroup::"
           fi
           # Use the downloaded file path:
           CONFIG="${BASE}"
+       elif [[ $CONFIG == file://* ]]; then
+          # Sanitize the path by removing "file://"" prefix
+          CONFIG=${CONFIG#file://*}
        elif [ ! -e "$CONFIG" ]; then
          echo "::error file=$CONFIG::Configuration file not found"
          exit 20
        fi
+
+       # At this point we have either downloaded the config file or it is
+       # available elsewhere
+       echo "::group::Content of $CONFIG"
+       cat $CONFIG
+       echo "::endgroup::"
        
        shift 2
        ;;
