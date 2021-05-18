@@ -42,7 +42,7 @@ inputs:
   xmlformat-use-tag:
     description: "Use the given tag from upstream GH repository"
     required: false
-    # default: "0.4"
+    default: "1.9"
 
 outputs:
   xmlfound:
